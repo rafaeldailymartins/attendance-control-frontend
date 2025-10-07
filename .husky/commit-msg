@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+# Automatically adds an emoji to the beginning of the commit message
+# Compatible with Linux (GNU sed) and macOS (BSD sed)
+
+COMMIT_MSG_FILE=$1
+FIRST_LINE=$(head -n1 "$COMMIT_MSG_FILE")
+
+# Extract the commit type (text before the first ":")
+TYPE=${FIRST_LINE%%:*}
+
+# Define the corresponding emoji for each commit type
+case "$TYPE" in
+  feat) EMOJI="✨" ;;
+  fix) EMOJI="🐛" ;;
+  docs) EMOJI="📝" ;;
+  style) EMOJI="🎨" ;;
+  refactor) EMOJI="♻️" ;;
+  test) EMOJI="✅" ;;
+  chore) EMOJI="🔧" ;;
+  perf) EMOJI="⚡️" ;;
+  ci) EMOJI="👷" ;;
+  revert) EMOJI="⏪️" ;;
+  *) EMOJI="" ;;
+esac
+
+# Exit if no emoji matches the commit type
+[ -z "$EMOJI" ] && exit 0
+
+if ! grep -q "^$EMOJI" "$COMMIT_MSG_FILE"; then
+  if [ "$(uname)" = "Darwin" ]; then
+    # macOS (BSD sed)
+    sed -i "" "1s/^/$EMOJI /" "$COMMIT_MSG_FILE"
+  else
+    # Linux (GNU sed)
+    sed -i "1s/^/$EMOJI /" "$COMMIT_MSG_FILE"
+  fi
+fi
