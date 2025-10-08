@@ -22,9 +22,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
-    "@tanstack/react-devtools": "^0.7.2",
     "@tanstack/react-router": "^1.132.0",
-    "@tanstack/react-router-devtools": "^1.132.47",
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -37,6 +35,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
+    "@tanstack/react-devtools": "^0.7.2",
+    "@tanstack/react-router-devtools": "^1.132.50",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.10.2",
