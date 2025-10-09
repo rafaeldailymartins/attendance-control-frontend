@@ -18,7 +18,7 @@
     "lint": "biome lint",
     "check": "biome check",
     "pre-commit": "bash .husky/pre-commit",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",

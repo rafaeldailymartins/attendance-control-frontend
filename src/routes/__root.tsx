@@ -8,17 +8,17 @@ export const Route = createRootRoute({
 		<>
 			<Header />
 			<Outlet />
-			<TanStackDevtools
-				config={{
-					position: "bottom-right",
-				}}
-				plugins={[
-					{
-						name: "Tanstack Router",
-						render: <TanStackRouterDevtoolsPanel />,
-					},
-				]}
-			/>
+			{!import.meta.env.PROD && (
+				<TanStackDevtools
+					config={{ position: "bottom-right" }}
+					plugins={[
+						{
+							name: "Tanstack Router",
+							render: <TanStackRouterDevtoolsPanel />,
+						},
+					]}
+				/>
+			)}
 		</>
 	),
 });
