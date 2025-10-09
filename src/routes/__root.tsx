@@ -1,24 +1,32 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import Header from "@/components/Header";
+import React, { Suspense } from "react";
+
+const loadDevtools = () =>
+	Promise.all([
+		import("@tanstack/react-devtools"),
+		import("@tanstack/react-router-devtools"),
+	]).then(([reactDevtools, reactRouterDevtools]) => {
+		return {
+			default: () => (
+				<>
+					<reactDevtools.TanStackDevtools />
+					<reactRouterDevtools.TanStackRouterDevtools />
+				</>
+			),
+		};
+	});
+
+const TanStackDevtools = import.meta.env.PROD
+	? () => null
+	: React.lazy(loadDevtools);
 
 export const Route = createRootRoute({
 	component: () => (
 		<>
-			<Header />
 			<Outlet />
-			{!import.meta.env.PROD && (
-				<TanStackDevtools
-					config={{ position: "bottom-right" }}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-					]}
-				/>
-			)}
+			<Suspense>
+				<TanStackDevtools />
+			</Suspense>
 		</>
 	),
 });
