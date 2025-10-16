@@ -5,12 +5,14 @@ const loadDevtools = () =>
 	Promise.all([
 		import("@tanstack/react-devtools"),
 		import("@tanstack/react-router-devtools"),
-	]).then(([reactDevtools, reactRouterDevtools]) => {
+		import("@tanstack/react-query-devtools"),
+	]).then(([reactDevtools, reactRouterDevtools, reactQueryDevtools]) => {
 		return {
 			default: () => (
 				<>
 					<reactDevtools.TanStackDevtools />
 					<reactRouterDevtools.TanStackRouterDevtools />
+					<reactQueryDevtools.ReactQueryDevtools buttonPosition="top-right" />
 				</>
 			),
 		};
