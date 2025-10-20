@@ -12,40 +12,9 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
-import { AxiosError } from "axios";
-import { toast } from "sonner";
+import { handleApiError } from "./lib/utils.ts";
 import reportWebVitals from "./reportWebVitals.ts";
 
-const handleApiError = (error: Error) => {
-	const DEFAULT_MESSAGE =
-		"Ocorreu um erro no servidor. Tente novamente mais tarde.";
-
-	if (!(error instanceof AxiosError)) {
-		toast.error("Ocorreu um erro no sistema. tente novamente mais tarde.");
-		return;
-	}
-
-	const message = error.response?.data?.detail?.message;
-
-	if (error.code === "ERR_NETWORK") {
-		toast.warning(
-			"No momento nossos servidores estão passando por instabilidade. Tente novamente mais tarde.",
-			{
-				duration: 8000,
-			},
-		);
-		return;
-	}
-
-	if (!error.status || !message) {
-		toast.error(DEFAULT_MESSAGE);
-		return;
-	}
-
-	if (error.status >= 500) {
-		toast.error(message);
-	}
-};
 const queryClient = new QueryClient({
 	queryCache: new QueryCache({
 		onError: handleApiError,
