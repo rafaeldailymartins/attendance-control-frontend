@@ -13,6 +13,9 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { BodyLoginUsersLoginPost as LoginRequest } from "@/http/gen/api.schemas";
+import { UsersService } from "@/http/services";
+import { storage } from "@/lib/storage";
 
 export const Route = createFileRoute("/login")({
 	component: Login,
@@ -25,11 +28,23 @@ const FormSchema = z.object({
 
 type FormType = z.infer<typeof FormSchema>;
 
-function onSubmit(data: FormType) {
-	console.log(data);
-}
-
 function Login() {
+	const { mutateAsync: login, isPending } = UsersService.useLogin({
+		mutation: {
+			onSuccess: (data) => {
+				storage.accessToken.set(data.accessToken);
+			},
+		},
+	});
+
+	async function onSubmit(formData: FormType) {
+		const data: LoginRequest = {
+			username: formData.email,
+			password: formData.password,
+		};
+		await login({ data });
+	}
+
 	const form = useForm<FormType>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -87,7 +102,7 @@ function Login() {
 									)}
 								/>
 								<Button className="w-full" type="submit">
-									Entrar
+									{isPending ? "..." : "Entrar"}
 								</Button>
 							</form>
 						</Form>

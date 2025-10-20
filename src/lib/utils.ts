@@ -1,15 +1,29 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { ErrorType } from "@/http/customInstance";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export function toPascalCase(str: string) {
-	return str
-		.replace(/([a-z])([A-Z])/g, "$1 $2") // Splits camelCase words into separate words
-		.replace(/[-_]+|[^\p{L}\p{N}]/gu, " ") // Replaces dashes, underscores, and special characters with spaces
-		.toLowerCase() // Converts the entire string to lowercase
-		.replace(/(?:^|\s)(\p{L})/gu, (_, letter) => letter.toUpperCase()) // Capitalizes the first letter of each word
-		.replace(/\s+/g, ""); // Removes all spaces
+type Result<T, E = ErrorType> = {
+	data: T | null;
+	error: E | null;
+};
+
+export async function tryCatch<T, E = ErrorType>(
+	promise: Promise<T>,
+): Promise<Result<T, E>> {
+	try {
+		const data = await promise;
+		return {
+			data: data,
+			error: null,
+		};
+	} catch (error) {
+		return {
+			data: null,
+			error: error as E,
+		};
+	}
 }
