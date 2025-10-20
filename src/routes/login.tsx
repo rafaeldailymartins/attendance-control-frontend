@@ -40,10 +40,7 @@ function Login() {
 				storage.accessToken.set(data.accessToken);
 			},
 			onSettled: (_data, _error, _variables, res) => {
-				// Dismiss the toast after 1 second
-				setTimeout(() => {
-					toast.dismiss(res?.toastId);
-				}, 1000);
+				toast.dismiss(res?.toastId);
 			},
 		},
 	});
