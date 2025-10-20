@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,8 +32,18 @@ type FormType = z.infer<typeof FormSchema>;
 function Login() {
 	const { mutateAsync: login, isPending } = UsersService.useLogin({
 		mutation: {
+			onMutate: () => {
+				const toastId = toast.loading("Entrando...");
+				return { toastId };
+			},
 			onSuccess: (data) => {
 				storage.accessToken.set(data.accessToken);
+			},
+			onSettled: (_data, _error, _variables, res) => {
+				// Dismiss the toast after 1 second
+				setTimeout(() => {
+					toast.dismiss(res?.toastId);
+				}, 1000);
 			},
 		},
 	});
@@ -101,8 +112,8 @@ function Login() {
 										</FormItem>
 									)}
 								/>
-								<Button className="w-full" type="submit">
-									{isPending ? "..." : "Entrar"}
+								<Button disabled={isPending} className="w-full" type="submit">
+									Entrar
 								</Button>
 							</form>
 						</Form>
