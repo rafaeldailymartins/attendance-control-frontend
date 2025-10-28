@@ -3,6 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import type { ErrorType } from "@/http/customInstance";
+import { storage } from "./storage";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -61,8 +62,45 @@ export function handleApiError(error: Error) {
 		return;
 	}
 
+	if (error.status === 401) {
+		// storage.clear()
+		// window.location.href = "/login"
+		return;
+	}
+
 	if (error.status >= 400) {
 		toast.warning(message);
 		return;
 	}
+}
+
+export function isJwtExpired(token: string) {
+	try {
+		const [, payloadBase64] = token.split(".");
+		const payloadJson = atob(
+			payloadBase64.replace(/-/g, "+").replace(/_/g, "/"),
+		);
+		const payload = JSON.parse(payloadJson);
+
+		if (!payload.exp) return true;
+
+		const now = Math.floor(Date.now() / 1000);
+		return payload.exp < now;
+	} catch (err) {
+		console.error("Invalid Token:", err);
+		return true;
+	}
+}
+
+export function isLoggedIn() {
+	const token = storage.accessToken.get();
+
+	if (!token) return false;
+
+	if (isJwtExpired(token)) {
+		storage.clear();
+		return false;
+	}
+
+	return true;
 }

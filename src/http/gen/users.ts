@@ -167,80 +167,132 @@ export const getCurrentUser = (
 	signal?: AbortSignal,
 ) => {
 	return customInstance<UserResponse>(
-		{ url: `/users/me`, method: "POST", signal },
+		{ url: `/users/me`, method: "GET", signal },
 		options,
 	);
 };
 
-export const getGetCurrentUserMutationOptions = <
-	TError = ErrorType<ApiError>,
-	TContext = unknown,
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof getCurrentUser>>,
-		TError,
-		void,
-		TContext
-	>;
-	request?: SecondParameter<typeof customInstance>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof getCurrentUser>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationKey = ["getCurrentUser"];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation &&
-			"mutationKey" in options.mutation &&
-			options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof getCurrentUser>>,
-		void
-	> = () => {
-		return getCurrentUser(requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
+export const getGetCurrentUserQueryKey = () => {
+	return [`/users/me`] as const;
 };
 
-export type GetCurrentUserMutationResult = NonNullable<
+export const getGetCurrentUserQueryOptions = <
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({
+		signal,
+	}) => getCurrentUser(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getCurrentUser>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetCurrentUserQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getCurrentUser>>
 >;
+export type GetCurrentUserQueryError = ErrorType<ApiError>;
 
-export type GetCurrentUserMutationError = ErrorType<ApiError>;
-
-/**
- * @summary Get Current User
- */
-export const useGetCurrentUser = <
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
 	TError = ErrorType<ApiError>,
-	TContext = unknown,
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCurrentUser>>,
+					TError,
+					Awaited<ReturnType<typeof getCurrentUser>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
 >(
 	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof getCurrentUser>>,
-			TError,
-			void,
-			TContext
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCurrentUser>>,
+					TError,
+					Awaited<ReturnType<typeof getCurrentUser>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
 		>;
 		request?: SecondParameter<typeof customInstance>;
 	},
 	queryClient?: QueryClient,
-): UseMutationResult<
-	Awaited<ReturnType<typeof getCurrentUser>>,
-	TError,
-	void,
-	TContext
-> => {
-	const mutationOptions = getGetCurrentUserMutationOptions(options);
-
-	return useMutation(mutationOptions, queryClient);
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
 };
+/**
+ * @summary Get Current User
+ */
+
+export function useGetCurrentUser<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetCurrentUserQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
 /**
  * Create new user
  * @summary Create New User

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -30,6 +30,8 @@ const FormSchema = z.object({
 type FormType = z.infer<typeof FormSchema>;
 
 function Login() {
+	const navigate = useNavigate();
+
 	const { mutateAsync: login, isPending } = UsersService.useLogin({
 		mutation: {
 			onMutate: () => {
@@ -38,6 +40,7 @@ function Login() {
 			},
 			onSuccess: (data) => {
 				storage.accessToken.set(data.accessToken);
+				navigate({ to: "/" });
 			},
 			onSettled: (_data, _error, _variables, res) => {
 				toast.dismiss(res?.toastId);

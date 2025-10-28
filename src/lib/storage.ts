@@ -16,4 +16,5 @@ function createStorage(key: string) {
 
 export const storage = {
 	accessToken: createStorage("accessToken"),
+	clear: () => localStorage.clear(),
 };

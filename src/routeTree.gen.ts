@@ -10,42 +10,57 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as PrivateRouteImport } from './routes/_private'
+import { Route as PrivateIndexRouteImport } from './routes/_private/index'
+import { Route as PrivateClockRouteImport } from './routes/_private/clock'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const PrivateRoute = PrivateRouteImport.update({
+  id: '/_private',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateIndexRoute = PrivateIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PrivateRoute,
+} as any)
+const PrivateClockRoute = PrivateClockRouteImport.update({
+  id: '/clock',
+  path: '/clock',
+  getParentRoute: () => PrivateRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/clock': typeof PrivateClockRoute
+  '/': typeof PrivateIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/clock': typeof PrivateClockRoute
+  '/': typeof PrivateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_private': typeof PrivateRouteWithChildren
   '/login': typeof LoginRoute
+  '/_private/clock': typeof PrivateClockRoute
+  '/_private/': typeof PrivateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/login' | '/clock' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login'
+  to: '/login' | '/clock' | '/'
+  id: '__root__' | '/_private' | '/login' | '/_private/clock' | '/_private/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  PrivateRoute: typeof PrivateRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
@@ -58,18 +73,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_private': {
+      id: '/_private'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PrivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_private/': {
+      id: '/_private/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PrivateIndexRouteImport
+      parentRoute: typeof PrivateRoute
+    }
+    '/_private/clock': {
+      id: '/_private/clock'
+      path: '/clock'
+      fullPath: '/clock'
+      preLoaderRoute: typeof PrivateClockRouteImport
+      parentRoute: typeof PrivateRoute
     }
   }
 }
 
+interface PrivateRouteChildren {
+  PrivateClockRoute: typeof PrivateClockRoute
+  PrivateIndexRoute: typeof PrivateIndexRoute
+}
+
+const PrivateRouteChildren: PrivateRouteChildren = {
+  PrivateClockRoute: PrivateClockRoute,
+  PrivateIndexRoute: PrivateIndexRoute,
+}
+
+const PrivateRouteWithChildren =
+  PrivateRoute._addFileChildren(PrivateRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  PrivateRoute: PrivateRouteWithChildren,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
