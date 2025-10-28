@@ -3,7 +3,7 @@ import { storage } from "@/lib/storage";
 import type { ApiError } from "./gen/api.schemas";
 
 export const AXIOS_INSTANCE = Axios.create({
-	baseURL: "http://localhost:8000",
+	baseURL: import.meta.env.VITE_API_URL,
 });
 
 AXIOS_INSTANCE.interceptors.request.use((config) => {
