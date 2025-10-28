@@ -1,3 +1,9 @@
+import {
+	MutationCache,
+	QueryCache,
+	QueryClient,
+	QueryClientProvider,
+} from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
@@ -6,12 +12,22 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
+import { handleApiError } from "./lib/utils.ts";
 import reportWebVitals from "./reportWebVitals.ts";
+
+const queryClient = new QueryClient({
+	queryCache: new QueryCache({
+		onError: handleApiError,
+	}),
+	mutationCache: new MutationCache({
+		onError: handleApiError,
+	}),
+});
 
 // Create a new router instance
 const router = createRouter({
 	routeTree,
-	context: {},
+	context: { queryClient },
 	defaultPreload: "intent",
 	scrollRestoration: true,
 	defaultStructuralSharing: true,
@@ -31,7 +47,9 @@ if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<StrictMode>
-			<RouterProvider router={router} />
+			<QueryClientProvider client={queryClient}>
+				<RouterProvider router={router} />
+			</QueryClientProvider>
 		</StrictMode>,
 	);
 }

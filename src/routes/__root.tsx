@@ -1,24 +1,43 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import Header from "@/components/Header";
+import React, { Suspense } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { MainService } from "@/http/services";
+
+const loadDevtools = () =>
+	Promise.all([
+		import("@tanstack/react-devtools"),
+		import("@tanstack/react-router-devtools"),
+		import("@tanstack/react-query-devtools"),
+	]).then(([reactDevtools, reactRouterDevtools, reactQueryDevtools]) => {
+		return {
+			default: () => (
+				<>
+					<reactDevtools.TanStackDevtools />
+					<reactRouterDevtools.TanStackRouterDevtools />
+					<reactQueryDevtools.ReactQueryDevtools buttonPosition="top-right" />
+				</>
+			),
+		};
+	});
+
+const TanStackDevtools = import.meta.env.PROD
+	? () => null
+	: React.lazy(loadDevtools);
 
 export const Route = createRootRoute({
-	component: () => (
-		<>
-			<Header />
-			<Outlet />
-			{!import.meta.env.PROD && (
-				<TanStackDevtools
-					config={{ position: "bottom-right" }}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-					]}
-				/>
-			)}
-		</>
-	),
+	component: Root,
 });
+
+function Root() {
+	MainService.useHealthCheck();
+
+	return (
+		<>
+			<Outlet />
+			<Toaster />
+			<Suspense>
+				<TanStackDevtools />
+			</Suspense>
+		</>
+	);
+}
