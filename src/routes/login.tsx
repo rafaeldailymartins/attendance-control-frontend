@@ -71,7 +71,7 @@ function Login() {
 					SISTEMA DE CONTROLE DE PRESENÇA
 				</h1>
 			</div>
-			<div className="flex items-center justify-center min-h-screen p-6 bg-gray-50 w-2/5">
+			<div className="flex items-center justify-center min-h-screen p-6 bg-background w-2/5">
 				<Card className="w-full max-w-md">
 					<CardHeader>
 						<CardTitle className="text-3xl">Login</CardTitle>
