@@ -5,15 +5,13 @@ import { MainService } from "@/http/services";
 
 const loadDevtools = () =>
 	Promise.all([
-		import("@tanstack/react-devtools"),
 		import("@tanstack/react-router-devtools"),
 		import("@tanstack/react-query-devtools"),
-	]).then(([reactDevtools, reactRouterDevtools, reactQueryDevtools]) => {
+	]).then(([reactRouterDevtools, reactQueryDevtools]) => {
 		return {
 			default: () => (
 				<>
-					<reactDevtools.TanStackDevtools />
-					<reactRouterDevtools.TanStackRouterDevtools />
+					<reactRouterDevtools.TanStackRouterDevtools position="bottom-right" />
 					<reactQueryDevtools.ReactQueryDevtools buttonPosition="top-right" />
 				</>
 			),
