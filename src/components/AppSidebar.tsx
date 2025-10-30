@@ -20,7 +20,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks/useLogout";
-import { useGetCurrentUser } from "@/http/gen/users";
+import { UsersService } from "@/http/services";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -29,6 +29,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Skeleton } from "./ui/skeleton";
 
 type MenuItem = {
 	title: string;
@@ -79,8 +80,17 @@ function Content() {
 
 function Footer() {
 	const { isMobile } = useSidebar();
-	const { data: user } = useGetCurrentUser();
+	const { data: user, isLoading, isError } = UsersService.useGetCurrentUser();
 	const logout = useLogout();
+
+	if (isLoading)
+		return (
+			<SidebarFooter>
+				<Skeleton className="h-12 w-full rounded-md bg-[#084696]" />
+			</SidebarFooter>
+		);
+
+	if (isError || !user) return;
 
 	return (
 		<SidebarFooter>
@@ -90,8 +100,8 @@ function Footer() {
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton size="lg">
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium">{user?.name}</span>
-									<span className="truncate text-xs">{user?.email}</span>
+									<span className="truncate font-medium">{user.name}</span>
+									<span className="truncate text-xs">{user.email}</span>
 								</div>
 								<ChevronsUpDown />
 							</SidebarMenuButton>
@@ -104,9 +114,9 @@ function Footer() {
 								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 									<CircleUserRound />
 									<div className="grid flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-medium">{user?.name}</span>
+										<span className="truncate font-medium">{user.name}</span>
 										<span className="text-muted-foreground truncate text-xs">
-											{user?.email}
+											{user.email}
 										</span>
 									</div>
 								</div>
