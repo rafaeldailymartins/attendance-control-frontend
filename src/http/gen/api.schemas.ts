@@ -512,6 +512,10 @@ export const WeekdayEnum = {
 
 export type ListUsersParams = {
 	/**
+	 * Find users by name. Enter part of the name to get matching results.
+	 */
+	search?: string | null;
+	/**
 	 * @minimum 1
 	 * @maximum 100
 	 */
