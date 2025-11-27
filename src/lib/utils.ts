@@ -3,7 +3,11 @@ import { type ClassValue, clsx } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import type { ErrorType } from "@/http/customInstance";
-import type { ShiftResponse, WeekdayEnum } from "@/http/gen/api.schemas";
+import type {
+	AttendanceType,
+	ShiftResponse,
+	WeekdayEnum,
+} from "@/http/gen/api.schemas";
 import { storage } from "./storage";
 
 export function cn(...inputs: ClassValue[]) {
@@ -118,4 +122,9 @@ export const WEEKDAY_MAP: Record<WeekdayEnum, string> = {
 	4: "Sexta",
 	5: "Sábado",
 	6: "Domingo",
+};
+
+export const ATTENDANCE_TYPE_MAP: Record<AttendanceType, string> = {
+	0: "Entrada",
+	1: "Saída",
 };

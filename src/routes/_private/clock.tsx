@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Clock } from "@/components/Clock";
 import { ComboboxUser } from "@/components/ComboboxUser";
+import { RecordsTable } from "@/components/RecordsTable";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -78,11 +79,15 @@ function ClockPage() {
 					</Dialog>
 				</CardFooter>
 			</Card>
-			{/* TODO: Adicionar a tabela de registros no card abaixo */}
 			<Card>
-				<CardHeader></CardHeader>
-				<CardContent></CardContent>
-				<CardFooter></CardFooter>
+				<CardHeader>
+					<CardTitle className="font-semibold text-primary text-3xl">
+						Registros de Presença
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<RecordsTable />
+				</CardContent>
 			</Card>
 		</div>
 	);
@@ -116,8 +121,11 @@ function ClockDialogContent({
 				onSettled: (_data, _error, _variables, res) => {
 					toast.dismiss(res?.toastId);
 				},
-				onSuccess: () => {
+				onSuccess: (_data, _variables, _res, context) => {
 					toast.success("Você bateu o ponto com sucesso!");
+					context.client.invalidateQueries({
+						queryKey: RecordsService.getListAttendancesInfiniteQueryKey(),
+					});
 				},
 			},
 		});

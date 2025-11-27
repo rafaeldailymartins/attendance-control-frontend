@@ -89,6 +89,8 @@ export interface AttendanceResponse {
 	timestamp: string;
 	/** The minutes the user was late clocking in or out. If it's less than the AppConfig setting (mintues_late for clock in and minutes_early for clock out), the value is saved as 0. */
 	minutesLate: number;
+	/** The attendance's shift. */
+	shift: ShiftResponse;
 }
 
 export type AttendanceType =
@@ -311,6 +313,7 @@ export interface ShiftResponse {
 	id: number;
 	/** The ID corresponding to the shift's user. */
 	userId: number;
+	user: ShiftUserResponse;
 }
 
 /**
@@ -342,6 +345,27 @@ export interface ShiftUpdate {
 	endTime?: ShiftUpdateEndTime;
 	/** The ID corresponding to the shift's user. */
 	userId?: ShiftUpdateUserId;
+}
+
+/**
+ * The ID corresponding to the user's role.
+ */
+export type ShiftUserResponseRoleId = number | null;
+
+export interface ShiftUserResponse {
+	/** The user id. */
+	id: number;
+	/** False if the user should be hidden when returning absences. */
+	active: boolean;
+	/** The user's email, also used as the username when logging in. */
+	email: string;
+	/**
+	 * The user's full name.
+	 * @maxLength 255
+	 */
+	name: string;
+	/** The ID corresponding to the user's role. */
+	roleId?: ShiftUserResponseRoleId;
 }
 
 export interface TimezoneResponse {

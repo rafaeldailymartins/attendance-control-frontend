@@ -22,6 +22,8 @@ import type {
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseInfiniteQueryOptions,
+	UseSuspenseInfiniteQueryResult,
 	UseSuspenseQueryOptions,
 	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
@@ -29,6 +31,7 @@ import {
 	useInfiniteQuery,
 	useMutation,
 	useQuery,
+	useSuspenseInfiniteQuery,
 	useSuspenseQuery,
 } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
@@ -619,6 +622,178 @@ export function useListAttendancesSuspense<
 		queryOptions,
 		queryClient,
 	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListAttendancesSuspenseInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListAttendancesInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listAttendances>>,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> = ({ signal, pageParam }) =>
+		listAttendances(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return {
+		queryKey,
+		queryFn,
+		...queryOptions,
+	} as UseSuspenseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listAttendances>>,
+		TError,
+		TData,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAttendancesSuspenseInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listAttendances>>
+>;
+export type ListAttendancesSuspenseInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListAttendancesParams,
+	options: {
+		query: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Attendances
+ */
+
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListAttendancesSuspenseInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	const query = useSuspenseInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseInfiniteQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
 	};
 

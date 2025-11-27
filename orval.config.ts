@@ -35,6 +35,7 @@ export default defineConfig({
             list_attendances: {
               query: {
                 useInfinite: true,
+                useSuspenseInfiniteQuery: true
               }
             },
             list_roles: {
