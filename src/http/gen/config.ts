@@ -8,18 +8,29 @@
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
+	DefinedUseInfiniteQueryResult,
 	DefinedUseQueryResult,
+	InfiniteData,
 	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseInfiniteQueryOptions,
+	UseInfiniteQueryResult,
 	UseMutationOptions,
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseQueryOptions,
+	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
 
 import { customInstance } from "../customInstance";
@@ -149,9 +160,196 @@ export const listRoles = (
 	);
 };
 
+export const getListRolesInfiniteQueryKey = (params?: ListRolesParams) => {
+	return ["infinate", `/config/roles`, ...(params ? [params] : [])] as const;
+};
+
 export const getListRolesQueryKey = (params?: ListRolesParams) => {
 	return [`/config/roles`, ...(params ? [params] : [])] as const;
 };
+
+export const getListRolesInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listRoles>>,
+		ListRolesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData,
+				QueryKey,
+				ListRolesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListRolesInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listRoles>>,
+		QueryKey,
+		ListRolesParams["page"]
+	> = ({ signal, pageParam }) =>
+		listRoles(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listRoles>>,
+		TError,
+		TData,
+		QueryKey,
+		ListRolesParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListRolesInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listRoles>>
+>;
+export type ListRolesInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListRolesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listRoles>>,
+		ListRolesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListRolesParams,
+	options: {
+		query: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData,
+				QueryKey,
+				ListRolesParams["page"]
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listRoles>>,
+					TError,
+					Awaited<ReturnType<typeof listRoles>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listRoles>>,
+		ListRolesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData,
+				QueryKey,
+				ListRolesParams["page"]
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listRoles>>,
+					TError,
+					Awaited<ReturnType<typeof listRoles>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listRoles>>,
+		ListRolesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData,
+				QueryKey,
+				ListRolesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Roles
+ */
+
+export function useListRolesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listRoles>>,
+		ListRolesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData,
+				QueryKey,
+				ListRolesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListRolesInfiniteQueryOptions(params, options);
+
+	const query = useInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 export const getListRolesQueryOptions = <
 	TData = Awaited<ReturnType<typeof listRoles>>,
@@ -271,6 +469,136 @@ export function useListRoles<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListRolesSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListRolesQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listRoles>>> = ({
+		signal,
+	}) => listRoles(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listRoles>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListRolesSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listRoles>>
+>;
+export type ListRolesSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListRolesParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Roles
+ */
+
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListRolesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListRolesSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -554,9 +882,196 @@ export const listDaysOff = (
 	);
 };
 
+export const getListDaysOffInfiniteQueryKey = (params?: ListDaysOffParams) => {
+	return ["infinate", `/config/days-off`, ...(params ? [params] : [])] as const;
+};
+
 export const getListDaysOffQueryKey = (params?: ListDaysOffParams) => {
 	return [`/config/days-off`, ...(params ? [params] : [])] as const;
 };
+
+export const getListDaysOffInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListDaysOffInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		QueryKey,
+		ListDaysOffParams["page"]
+	> = ({ signal, pageParam }) =>
+		listDaysOff(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		TError,
+		TData,
+		QueryKey,
+		ListDaysOffParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListDaysOffInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listDaysOff>>
+>;
+export type ListDaysOffInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListDaysOffInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListDaysOffParams,
+	options: {
+		query: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listDaysOff>>,
+					TError,
+					Awaited<ReturnType<typeof listDaysOff>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listDaysOff>>,
+					TError,
+					Awaited<ReturnType<typeof listDaysOff>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Days Off
+ */
+
+export function useListDaysOffInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListDaysOffInfiniteQueryOptions(params, options);
+
+	const query = useInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 export const getListDaysOffQueryOptions = <
 	TData = Awaited<ReturnType<typeof listDaysOff>>,
@@ -676,6 +1191,136 @@ export function useListDaysOff<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListDaysOffSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listDaysOff>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListDaysOffQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listDaysOff>>> = ({
+		signal,
+	}) => listDaysOff(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListDaysOffSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listDaysOff>>
+>;
+export type ListDaysOffSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListDaysOffSuspense<
+	TData = Awaited<ReturnType<typeof listDaysOff>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListDaysOffParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffSuspense<
+	TData = Awaited<ReturnType<typeof listDaysOff>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffSuspense<
+	TData = Awaited<ReturnType<typeof listDaysOff>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Days Off
+ */
+
+export function useListDaysOffSuspense<
+	TData = Awaited<ReturnType<typeof listDaysOff>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListDaysOffSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -811,6 +1456,129 @@ export function useGetAppConfig<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getGetAppConfigSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof getAppConfig>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<
+			Awaited<ReturnType<typeof getAppConfig>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetAppConfigQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getAppConfig>>> = ({
+		signal,
+	}) => getAppConfig(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof getAppConfig>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetAppConfigSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getAppConfig>>
+>;
+export type GetAppConfigSuspenseQueryError = ErrorType<ApiError>;
+
+export function useGetAppConfigSuspense<
+	TData = Awaited<ReturnType<typeof getAppConfig>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getAppConfig>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAppConfigSuspense<
+	TData = Awaited<ReturnType<typeof getAppConfig>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getAppConfig>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetAppConfigSuspense<
+	TData = Awaited<ReturnType<typeof getAppConfig>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getAppConfig>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get App Config
+ */
+
+export function useGetAppConfigSuspense<
+	TData = Awaited<ReturnType<typeof getAppConfig>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getAppConfig>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetAppConfigSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -1121,6 +1889,129 @@ export function useListTimezones<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListTimezonesSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listTimezones>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<
+			Awaited<ReturnType<typeof listTimezones>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListTimezonesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listTimezones>>> = ({
+		signal,
+	}) => listTimezones(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listTimezones>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListTimezonesSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listTimezones>>
+>;
+export type ListTimezonesSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListTimezonesSuspense<
+	TData = Awaited<ReturnType<typeof listTimezones>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listTimezones>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListTimezonesSuspense<
+	TData = Awaited<ReturnType<typeof listTimezones>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listTimezones>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListTimezonesSuspense<
+	TData = Awaited<ReturnType<typeof listTimezones>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listTimezones>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Timezones
+ */
+
+export function useListTimezonesSuspense<
+	TData = Awaited<ReturnType<typeof listTimezones>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listTimezones>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListTimezonesSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 

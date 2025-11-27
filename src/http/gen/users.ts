@@ -8,18 +8,29 @@
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
+	DefinedUseInfiniteQueryResult,
 	DefinedUseQueryResult,
+	InfiniteData,
 	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseInfiniteQueryOptions,
+	UseInfiniteQueryResult,
 	UseMutationOptions,
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseQueryOptions,
+	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
 
 import { customInstance } from "../customInstance";
@@ -29,6 +40,7 @@ import type {
 	ListUsersParams,
 	Message,
 	PageUserResponse,
+	ShiftResponse,
 	Token,
 	UserCreate,
 	UserResponse,
@@ -293,6 +305,129 @@ export function useGetCurrentUser<
 	return query;
 }
 
+export const getGetCurrentUserSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<
+			Awaited<ReturnType<typeof getCurrentUser>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({
+		signal,
+	}) => getCurrentUser(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof getCurrentUser>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetCurrentUserSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getCurrentUser>>
+>;
+export type GetCurrentUserSuspenseQueryError = ErrorType<ApiError>;
+
+export function useGetCurrentUserSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentUserSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentUserSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get Current User
+ */
+
+export function useGetCurrentUserSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetCurrentUserSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
 /**
  * Create new user
  * @summary Create New User
@@ -400,9 +535,196 @@ export const listUsers = (
 	);
 };
 
+export const getListUsersInfiniteQueryKey = (params?: ListUsersParams) => {
+	return ["infinate", `/users/`, ...(params ? [params] : [])] as const;
+};
+
 export const getListUsersQueryKey = (params?: ListUsersParams) => {
 	return [`/users/`, ...(params ? [params] : [])] as const;
 };
+
+export const getListUsersInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listUsers>>,
+		ListUsersParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData,
+				QueryKey,
+				ListUsersParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListUsersInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listUsers>>,
+		QueryKey,
+		ListUsersParams["page"]
+	> = ({ signal, pageParam }) =>
+		listUsers(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listUsers>>,
+		TError,
+		TData,
+		QueryKey,
+		ListUsersParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListUsersInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listUsers>>
+>;
+export type ListUsersInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListUsersInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listUsers>>,
+		ListUsersParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListUsersParams,
+	options: {
+		query: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData,
+				QueryKey,
+				ListUsersParams["page"]
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listUsers>>,
+					TError,
+					Awaited<ReturnType<typeof listUsers>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUsersInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listUsers>>,
+		ListUsersParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData,
+				QueryKey,
+				ListUsersParams["page"]
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listUsers>>,
+					TError,
+					Awaited<ReturnType<typeof listUsers>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUsersInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listUsers>>,
+		ListUsersParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData,
+				QueryKey,
+				ListUsersParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Users
+ */
+
+export function useListUsersInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listUsers>>,
+		ListUsersParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData,
+				QueryKey,
+				ListUsersParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListUsersInfiniteQueryOptions(params, options);
+
+	const query = useInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 export const getListUsersQueryOptions = <
 	TData = Awaited<ReturnType<typeof listUsers>>,
@@ -522,6 +844,414 @@ export function useListUsers<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListUsersSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listUsers>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListUsersQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listUsers>>> = ({
+		signal,
+	}) => listUsers(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listUsers>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListUsersSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listUsers>>
+>;
+export type ListUsersSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListUsersSuspense<
+	TData = Awaited<ReturnType<typeof listUsers>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListUsersParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUsersSuspense<
+	TData = Awaited<ReturnType<typeof listUsers>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUsersSuspense<
+	TData = Awaited<ReturnType<typeof listUsers>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Users
+ */
+
+export function useListUsersSuspense<
+	TData = Awaited<ReturnType<typeof listUsers>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListUsersParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUsers>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListUsersSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+/**
+ * Get user shifts
+ * @summary List User Shifts
+ */
+export const listUserShifts = (
+	userId: number,
+	options?: SecondParameter<typeof customInstance>,
+	signal?: AbortSignal,
+) => {
+	return customInstance<ShiftResponse[]>(
+		{ url: `/users/${userId}/shifts`, method: "GET", signal },
+		options,
+	);
+};
+
+export const getListUserShiftsQueryKey = (userId?: number) => {
+	return [`/users/${userId}/shifts`] as const;
+};
+
+export const getListUserShiftsQueryOptions = <
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listUserShifts>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListUserShiftsQueryKey(userId);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listUserShifts>>> = ({
+		signal,
+	}) => listUserShifts(userId, requestOptions, signal);
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: !!userId,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof listUserShifts>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListUserShiftsQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listUserShifts>>
+>;
+export type ListUserShiftsQueryError = ErrorType<ApiError>;
+
+export function useListUserShifts<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listUserShifts>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listUserShifts>>,
+					TError,
+					Awaited<ReturnType<typeof listUserShifts>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUserShifts<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listUserShifts>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listUserShifts>>,
+					TError,
+					Awaited<ReturnType<typeof listUserShifts>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUserShifts<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listUserShifts>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List User Shifts
+ */
+
+export function useListUserShifts<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listUserShifts>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListUserShiftsQueryOptions(userId, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListUserShiftsSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUserShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListUserShiftsQueryKey(userId);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listUserShifts>>> = ({
+		signal,
+	}) => listUserShifts(userId, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listUserShifts>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListUserShiftsSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listUserShifts>>
+>;
+export type ListUserShiftsSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListUserShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUserShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUserShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUserShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListUserShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUserShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List User Shifts
+ */
+
+export function useListUserShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listUserShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listUserShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListUserShiftsSuspenseQueryOptions(userId, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -668,6 +1398,136 @@ export function useGetUser<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getGetUserSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof getUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetUserQueryKey(userId);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUser>>> = ({
+		signal,
+	}) => getUser(userId, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof getUser>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetUserSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getUser>>
+>;
+export type GetUserSuspenseQueryError = ErrorType<ApiError>;
+
+export function useGetUserSuspense<
+	TData = Awaited<ReturnType<typeof getUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserSuspense<
+	TData = Awaited<ReturnType<typeof getUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetUserSuspense<
+	TData = Awaited<ReturnType<typeof getUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get User
+ */
+
+export function useGetUserSuspense<
+	TData = Awaited<ReturnType<typeof getUser>>,
+	TError = ErrorType<ApiError>,
+>(
+	userId: number,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getUser>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetUserSuspenseQueryOptions(userId, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 

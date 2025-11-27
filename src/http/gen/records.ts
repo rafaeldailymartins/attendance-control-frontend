@@ -8,18 +8,32 @@
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
+	DefinedUseInfiniteQueryResult,
 	DefinedUseQueryResult,
+	InfiniteData,
 	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseInfiniteQueryOptions,
+	UseInfiniteQueryResult,
 	UseMutationOptions,
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseInfiniteQueryOptions,
+	UseSuspenseInfiniteQueryResult,
+	UseSuspenseQueryOptions,
+	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useSuspenseInfiniteQuery,
+	useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
 
 import { customInstance } from "../customInstance";
@@ -145,9 +159,202 @@ export const listAttendances = (
 	);
 };
 
+export const getListAttendancesInfiniteQueryKey = (
+	params?: ListAttendancesParams,
+) => {
+	return [
+		"infinate",
+		`/records/attendances`,
+		...(params ? [params] : []),
+	] as const;
+};
+
 export const getListAttendancesQueryKey = (params?: ListAttendancesParams) => {
 	return [`/records/attendances`, ...(params ? [params] : [])] as const;
 };
+
+export const getListAttendancesInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListAttendancesInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listAttendances>>,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> = ({ signal, pageParam }) =>
+		listAttendances(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listAttendances>>,
+		TError,
+		TData,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAttendancesInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listAttendances>>
+>;
+export type ListAttendancesInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListAttendancesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListAttendancesParams,
+	options: {
+		query: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listAttendances>>,
+					TError,
+					Awaited<ReturnType<typeof listAttendances>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listAttendances>>,
+					TError,
+					Awaited<ReturnType<typeof listAttendances>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Attendances
+ */
+
+export function useListAttendancesInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListAttendancesInfiniteQueryOptions(params, options);
+
+	const query = useInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 export const getListAttendancesQueryOptions = <
 	TData = Awaited<ReturnType<typeof listAttendances>>,
@@ -287,6 +494,308 @@ export function useListAttendances<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListAttendancesSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listAttendances>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListAttendancesQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listAttendances>>> = ({
+		signal,
+	}) => listAttendances(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listAttendances>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAttendancesSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listAttendances>>
+>;
+export type ListAttendancesSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListAttendancesSuspense<
+	TData = Awaited<ReturnType<typeof listAttendances>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListAttendancesParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspense<
+	TData = Awaited<ReturnType<typeof listAttendances>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspense<
+	TData = Awaited<ReturnType<typeof listAttendances>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Attendances
+ */
+
+export function useListAttendancesSuspense<
+	TData = Awaited<ReturnType<typeof listAttendances>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListAttendancesSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListAttendancesSuspenseInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListAttendancesInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listAttendances>>,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> = ({ signal, pageParam }) =>
+		listAttendances(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return {
+		queryKey,
+		queryFn,
+		...queryOptions,
+	} as UseSuspenseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listAttendances>>,
+		TError,
+		TData,
+		QueryKey,
+		ListAttendancesParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAttendancesSuspenseInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listAttendances>>
+>;
+export type ListAttendancesSuspenseInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListAttendancesParams,
+	options: {
+		query: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Attendances
+ */
+
+export function useListAttendancesSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listAttendances>>,
+		ListAttendancesParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListAttendancesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listAttendances>>,
+				TError,
+				TData,
+				QueryKey,
+				ListAttendancesParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListAttendancesSuspenseInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	const query = useSuspenseInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -607,6 +1116,136 @@ export function useListAbsences<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListAbsencesSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listAbsences>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: ListAbsencesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAbsences>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListAbsencesQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listAbsences>>> = ({
+		signal,
+	}) => listAbsences(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listAbsences>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAbsencesSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listAbsences>>
+>;
+export type ListAbsencesSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListAbsencesSuspense<
+	TData = Awaited<ReturnType<typeof listAbsences>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: ListAbsencesParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAbsences>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAbsencesSuspense<
+	TData = Awaited<ReturnType<typeof listAbsences>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: ListAbsencesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAbsences>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListAbsencesSuspense<
+	TData = Awaited<ReturnType<typeof listAbsences>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: ListAbsencesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAbsences>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Absences
+ */
+
+export function useListAbsencesSuspense<
+	TData = Awaited<ReturnType<typeof listAbsences>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: ListAbsencesParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listAbsences>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListAbsencesSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 

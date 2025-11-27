@@ -13,10 +13,42 @@ export default defineConfig({
         clean: true,
         biome: true,
         override: {
+          query: {
+            useSuspenseQuery: true,
+            useInfiniteQueryParam: 'page'
+          },
           mutator: {
             path: './src/http/customInstance.ts',
             name: 'customInstance',
           },
+          operations: {
+            list_users: {
+              query: {
+                useInfinite: true,
+              }
+            },
+            list_shifts: {
+              query: {
+                useInfinite: true,
+              }
+            },
+            list_attendances: {
+              query: {
+                useInfinite: true,
+                useSuspenseInfiniteQuery: true
+              }
+            },
+            list_roles: {
+              query: {
+                useInfinite: true,
+              }
+            },
+            list_days_off: {
+              query: {
+                useInfinite: true,
+              }
+            },
+          }
         }
     }
   },

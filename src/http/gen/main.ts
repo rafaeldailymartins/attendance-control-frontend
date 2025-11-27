@@ -15,8 +15,10 @@ import type {
 	UndefinedInitialDataOptions,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseQueryOptions,
+	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { ErrorType } from "../customInstance";
 
 import { customInstance } from "../customInstance";
@@ -157,6 +159,109 @@ export function useRoot<
 	return query;
 }
 
+export const getRootSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof root>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<Awaited<ReturnType<typeof root>>, TError, TData>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getRootQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof root>>> = ({
+		signal,
+	}) => root(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof root>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type RootSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof root>>
+>;
+export type RootSuspenseQueryError = ErrorType<ApiError>;
+
+export function useRootSuspense<
+	TData = Awaited<ReturnType<typeof root>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<Awaited<ReturnType<typeof root>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useRootSuspense<
+	TData = Awaited<ReturnType<typeof root>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<Awaited<ReturnType<typeof root>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useRootSuspense<
+	TData = Awaited<ReturnType<typeof root>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<Awaited<ReturnType<typeof root>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Root
+ */
+
+export function useRootSuspense<
+	TData = Awaited<ReturnType<typeof root>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<Awaited<ReturnType<typeof root>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getRootSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
 /**
  * Checks if the application is running and healthy.
  * @summary Health Check
@@ -286,6 +391,129 @@ export function useHealthCheck<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getHealthCheckSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof healthCheck>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<
+			Awaited<ReturnType<typeof healthCheck>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHealthCheckQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({
+		signal,
+	}) => healthCheck(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof healthCheck>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HealthCheckSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof healthCheck>>
+>;
+export type HealthCheckSuspenseQueryError = ErrorType<ApiError>;
+
+export function useHealthCheckSuspense<
+	TData = Awaited<ReturnType<typeof healthCheck>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof healthCheck>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useHealthCheckSuspense<
+	TData = Awaited<ReturnType<typeof healthCheck>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof healthCheck>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useHealthCheckSuspense<
+	TData = Awaited<ReturnType<typeof healthCheck>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof healthCheck>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Health Check
+ */
+
+export function useHealthCheckSuspense<
+	TData = Awaited<ReturnType<typeof healthCheck>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof healthCheck>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getHealthCheckSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 

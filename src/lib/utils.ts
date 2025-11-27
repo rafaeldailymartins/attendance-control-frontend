@@ -3,6 +3,11 @@ import { type ClassValue, clsx } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import type { ErrorType } from "@/http/customInstance";
+import type {
+	AttendanceType,
+	ShiftResponse,
+	WeekdayEnum,
+} from "@/http/gen/api.schemas";
 import { storage } from "./storage";
 
 export function cn(...inputs: ClassValue[]) {
@@ -63,8 +68,8 @@ export function handleApiError(error: Error) {
 	}
 
 	if (error.status === 401) {
-		// storage.clear()
-		// window.location.href = "/login"
+		storage.clear();
+		window.location.href = "/login";
 		return;
 	}
 
@@ -104,3 +109,22 @@ export function isLoggedIn() {
 
 	return true;
 }
+
+export function formatShift(shift: ShiftResponse) {
+	return `${WEEKDAY_MAP[shift.weekday]}: ${shift.startTime} - ${shift.endTime}`;
+}
+
+export const WEEKDAY_MAP: Record<WeekdayEnum, string> = {
+	0: "Segunda",
+	1: "Terça",
+	2: "Quarta",
+	3: "Quinta",
+	4: "Sexta",
+	5: "Sábado",
+	6: "Domingo",
+};
+
+export const ATTENDANCE_TYPE_MAP: Record<AttendanceType, string> = {
+	0: "Entrada",
+	1: "Saída",
+};

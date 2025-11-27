@@ -8,18 +8,29 @@
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
+	DefinedUseInfiniteQueryResult,
 	DefinedUseQueryResult,
+	InfiniteData,
 	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseInfiniteQueryOptions,
+	UseInfiniteQueryResult,
 	UseMutationOptions,
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseQueryOptions,
+	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
 
 import { customInstance } from "../customInstance";
@@ -145,9 +156,196 @@ export const listShifts = (
 	);
 };
 
+export const getListShiftsInfiniteQueryKey = (params?: ListShiftsParams) => {
+	return ["infinate", `/shifts/`, ...(params ? [params] : [])] as const;
+};
+
 export const getListShiftsQueryKey = (params?: ListShiftsParams) => {
 	return [`/shifts/`, ...(params ? [params] : [])] as const;
 };
+
+export const getListShiftsInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listShifts>>,
+		ListShiftsParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData,
+				QueryKey,
+				ListShiftsParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListShiftsInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listShifts>>,
+		QueryKey,
+		ListShiftsParams["page"]
+	> = ({ signal, pageParam }) =>
+		listShifts(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listShifts>>,
+		TError,
+		TData,
+		QueryKey,
+		ListShiftsParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListShiftsInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listShifts>>
+>;
+export type ListShiftsInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListShiftsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listShifts>>,
+		ListShiftsParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListShiftsParams,
+	options: {
+		query: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData,
+				QueryKey,
+				ListShiftsParams["page"]
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listShifts>>,
+					TError,
+					Awaited<ReturnType<typeof listShifts>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListShiftsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listShifts>>,
+		ListShiftsParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData,
+				QueryKey,
+				ListShiftsParams["page"]
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listShifts>>,
+					TError,
+					Awaited<ReturnType<typeof listShifts>>,
+					QueryKey
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListShiftsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listShifts>>,
+		ListShiftsParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData,
+				QueryKey,
+				ListShiftsParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Shifts
+ */
+
+export function useListShiftsInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listShifts>>,
+		ListShiftsParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData,
+				QueryKey,
+				ListShiftsParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListShiftsInfiniteQueryOptions(params, options);
+
+	const query = useInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseInfiniteQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 export const getListShiftsQueryOptions = <
 	TData = Awaited<ReturnType<typeof listShifts>>,
@@ -267,6 +465,136 @@ export function useListShifts<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListShiftsSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListShiftsQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listShifts>>> = ({
+		signal,
+	}) => listShifts(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listShifts>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListShiftsSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listShifts>>
+>;
+export type ListShiftsSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListShiftsParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Shifts
+ */
+
+export function useListShiftsSuspense<
+	TData = Awaited<ReturnType<typeof listShifts>>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListShiftsParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listShifts>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListShiftsSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
@@ -609,6 +937,136 @@ export function useGetCurrentShift<
 		TData,
 		TError
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getGetCurrentShiftSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof getCurrentShift>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: GetCurrentShiftParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentShift>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetCurrentShiftQueryKey(params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentShift>>> = ({
+		signal,
+	}) => getCurrentShift(params, requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof getCurrentShift>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetCurrentShiftSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getCurrentShift>>
+>;
+export type GetCurrentShiftSuspenseQueryError = ErrorType<ApiError>;
+
+export function useGetCurrentShiftSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentShift>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: GetCurrentShiftParams,
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentShift>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentShiftSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentShift>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: GetCurrentShiftParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentShift>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetCurrentShiftSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentShift>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: GetCurrentShiftParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentShift>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Get Current Shift
+ */
+
+export function useGetCurrentShiftSuspense<
+	TData = Awaited<ReturnType<typeof getCurrentShift>>,
+	TError = ErrorType<ApiError>,
+>(
+	params: GetCurrentShiftParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof getCurrentShift>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getGetCurrentShiftSuspenseQueryOptions(params, options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
 	query.queryKey = queryOptions.queryKey;
 
