@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 import type { AttendanceResponse } from "@/http/gen/api.schemas";
 import { RecordsService } from "@/http/services";
 import { ATTENDANCE_TYPE_MAP } from "@/lib/utils";
@@ -19,10 +20,7 @@ export const columns: ColumnDef<AttendanceResponse>[] = [
 	{
 		accessorKey: "timestamp",
 		header: "Data/Hora",
-		accessorFn: (row) => {
-			const date = new Date(row.timestamp);
-			return date.toLocaleString("pt-BR").replace(",", "");
-		},
+		accessorFn: (row) => format(row.timestamp, "dd-MM-yyyy HH:mm:ss"),
 	},
 ];
 

@@ -19,9 +19,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 export function ComboboxUser({
 	user,
 	onChange,
+	id,
 }: {
 	user?: UserResponse;
 	onChange: (value?: UserResponse) => void;
+	id?: string;
 }) {
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
@@ -57,6 +59,7 @@ export function ComboboxUser({
 					variant="ghost"
 					role="combobox"
 					aria-expanded={open}
+					id={id}
 					className={cn(
 						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
 						user && ["text-accent-foreground hover:text-accent-foreground"],

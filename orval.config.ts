@@ -15,7 +15,7 @@ export default defineConfig({
         override: {
           query: {
             useSuspenseQuery: true,
-            useInfiniteQueryParam: 'page'
+            useInfiniteQueryParam: 'page',
           },
           mutator: {
             path: './src/http/customInstance.ts',
