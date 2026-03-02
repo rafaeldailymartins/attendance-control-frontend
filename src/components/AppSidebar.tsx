@@ -3,6 +3,7 @@ import {
 	ChevronsUpDown,
 	CircleUserRound,
 	Clock,
+	FileChartColumn,
 	LogOut,
 	type LucideIcon,
 } from "lucide-react";
@@ -42,6 +43,11 @@ const items: MenuItem[] = [
 		title: "Ponto",
 		url: "/clock",
 		icon: Clock,
+	},
+	{
+		title: "Relatório de Faltas",
+		url: "/absences",
+		icon: FileChartColumn,
 	},
 ];
 

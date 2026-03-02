@@ -15,8 +15,8 @@ export type AbsenceResponseMinutesLate = number | null;
 export type AbsenceResponseAttendanceTimestamp = string | null;
 
 export interface AbsenceResponse {
-	/** The ID corresponding to the absence's shift. */
-	shiftId: number;
+	/** The attendance's shift. */
+	shift: ShiftResponse;
 	/** The date that attendance should have been recorded. */
 	day: string;
 	/** The type of absence. It can be 0 for clock in, or 1 for clock out. */
@@ -311,8 +311,6 @@ export interface ShiftResponse {
 	endTime: string;
 	/** The shift id. */
 	id: number;
-	/** The ID corresponding to the shift's user. */
-	userId: number;
 	user: ShiftUserResponse;
 }
 
@@ -348,9 +346,9 @@ export interface ShiftUpdate {
 }
 
 /**
- * The ID corresponding to the user's role.
+ * The user's role.
  */
-export type ShiftUserResponseRoleId = number | null;
+export type ShiftUserResponseRole = RoleResponse | null;
 
 export interface ShiftUserResponse {
 	/** The user id. */
@@ -364,8 +362,8 @@ export interface ShiftUserResponse {
 	 * @maxLength 255
 	 */
 	name: string;
-	/** The ID corresponding to the user's role. */
-	roleId?: ShiftUserResponseRoleId;
+	/** The user's role. */
+	role?: ShiftUserResponseRole;
 }
 
 export interface TimezoneResponse {
@@ -632,6 +630,25 @@ export type ListAttendancesParams = {
 };
 
 export type ListAbsencesParams = {
+	/**
+	 * The initial date that will be used to search for absences
+	 */
+	start_date: string;
+	/**
+	 * The final date that will be used to search for absences
+	 */
+	end_date: string;
+	/**
+	 * Filter by user id.
+	 */
+	user_id?: number | null;
+	/**
+	 * Filter by absence type. It can be 0 for clock in, or 1 for clock out.
+	 */
+	absence_type?: AttendanceType | null;
+};
+
+export type ExportAbsencesToCsvParams = {
 	/**
 	 * The initial date that will be used to search for absences
 	 */

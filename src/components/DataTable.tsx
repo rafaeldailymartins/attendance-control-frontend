@@ -93,7 +93,9 @@ export function DataTable<TData, TValue>({
 	}
 
 	function getInitialCountPageRows() {
-		return pagination.pageIndex * pagination.pageSize + 1;
+		return table.getRowCount()
+			? pagination.pageIndex * pagination.pageSize + 1
+			: 0;
 	}
 
 	return (
