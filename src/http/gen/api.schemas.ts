@@ -647,3 +647,22 @@ export type ListAbsencesParams = {
 	 */
 	absence_type?: AttendanceType | null;
 };
+
+export type ExportAbsencesToCsvParams = {
+	/**
+	 * The initial date that will be used to search for absences
+	 */
+	start_date: string;
+	/**
+	 * The final date that will be used to search for absences
+	 */
+	end_date: string;
+	/**
+	 * Filter by user id.
+	 */
+	user_id?: number | null;
+	/**
+	 * Filter by absence type. It can be 0 for clock in, or 1 for clock out.
+	 */
+	absence_type?: AttendanceType | null;
+};

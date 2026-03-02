@@ -3,7 +3,11 @@ import { differenceInDays, format, parseISO } from "date-fns";
 import { Download } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import type { AbsenceResponse, UserResponse } from "@/http/gen/api.schemas";
+import type {
+	AbsenceResponse,
+	ExportAbsencesToCsvParams,
+	UserResponse,
+} from "@/http/gen/api.schemas";
 import { RecordsService, UsersService } from "@/http/services";
 import { ATTENDANCE_TYPE_MAP } from "@/lib/utils";
 import type { AbsencesSearch } from "@/routes/_private/absences";
@@ -70,6 +74,31 @@ export function AbsencesTable({ filter, onChangeFilter }: Props) {
 	const { data: user } = UsersService.useGetUser(filter.userId ?? -1, {
 		query: {
 			enabled: !!filter.userId,
+		},
+	});
+
+	const { mutateAsync: exportToCsv } = RecordsService.useExportAbsencesToCsv({
+		request: {
+			responseType: "blob",
+		},
+		mutation: {
+			onMutate: () => {
+				const toastId = toast.loading("Exportando para csv...");
+				return { toastId };
+			},
+			onSuccess: (data) => {
+				const url = window.URL.createObjectURL(data as Blob);
+
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = "absences.csv";
+				a.click();
+
+				window.URL.revokeObjectURL(url);
+			},
+			onSettled: (_data, _error, _variables, res) => {
+				toast.dismiss(res?.toastId);
+			},
 		},
 	});
 
@@ -147,6 +176,15 @@ export function AbsencesTable({ filter, onChangeFilter }: Props) {
 		});
 	}
 
+	async function handleExportToCsv() {
+		const params: ExportAbsencesToCsvParams = {
+			start_date: filter.startDate,
+			end_date: filter.endDate,
+			user_id: filter.userId,
+		};
+		await exportToCsv({ params });
+	}
+
 	return (
 		<div className="py-6">
 			<div className="flex flex-row gap-5 items-end">
@@ -179,7 +217,7 @@ export function AbsencesTable({ filter, onChangeFilter }: Props) {
 					/>
 				</div>
 
-				<Button className="flex-[0.6]">
+				<Button className="flex-[0.6]" onClick={handleExportToCsv}>
 					<Download />
 					EXPORTAR CSV
 				</Button>

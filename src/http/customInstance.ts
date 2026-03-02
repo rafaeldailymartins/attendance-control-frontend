@@ -17,17 +17,16 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
 	return config;
 });
 
-export const customInstance = <T>(
+export const customInstance = async <T>(
 	config: AxiosRequestConfig,
 	options?: AxiosRequestConfig,
 ): Promise<T> => {
-	const promise = AXIOS_INSTANCE({ ...config, ...options })
-		.then(({ data }) => data)
-		.catch((err: AxiosError) => {
-			throw err;
-		});
+	const response = await AXIOS_INSTANCE({
+		...config,
+		...options,
+	});
 
-	return promise;
+	return response.data;
 };
 
 export type BodyType<BodyData> = BodyData;
