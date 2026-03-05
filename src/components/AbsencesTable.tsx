@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { differenceInDays, format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Download } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -23,9 +24,14 @@ export const columns: ColumnDef<AbsenceResponse>[] = [
 		header: "Nome",
 	},
 	{
-		accessorKey: "day",
+		id: "day",
 		header: "Data",
-		accessorFn: (row) => format(row.day, "dd-MM-yyyy HH:mm:ss"),
+		accessorFn: (row) => format(row.day, "dd/MM/yyyy HH:mm:ss"),
+	},
+	{
+		id: "weekday",
+		header: "Dia da semana",
+		accessorFn: (row) => format(row.day, "EEEE", { locale: ptBR }),
 	},
 	{
 		accessorKey: "shift.startTime",
@@ -55,7 +61,7 @@ export const columns: ColumnDef<AbsenceResponse>[] = [
 		header: "Data/Hora da Presença",
 		accessorFn: (row) => {
 			if (!row.attendanceTimestamp) return "-";
-			return format(row.attendanceTimestamp, "dd-MM-yyyy HH:mm:ss");
+			return format(row.attendanceTimestamp, "dd/MM/yyyy HH:mm:ss");
 		},
 	},
 ];
