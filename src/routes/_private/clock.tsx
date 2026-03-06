@@ -86,7 +86,7 @@ function ClockPage() {
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<RecordsTable />
+					<RecordsTable columnKeys={["name", "attendanceType", "timestamp"]} />
 				</CardContent>
 			</Card>
 		</div>
