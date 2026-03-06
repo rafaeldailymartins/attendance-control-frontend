@@ -666,3 +666,22 @@ export type ExportAbsencesToCsvParams = {
 	 */
 	absence_type?: AttendanceType | null;
 };
+
+export type ExportAttendancesToCsvParams = {
+	/**
+	 * Filter by user id.
+	 */
+	user_id?: number | null;
+	/**
+	 * Filter by attendance type. It can be 0 for clock in, or 1 for clock out.
+	 */
+	attendance_type?: AttendanceType | null;
+	/**
+	 * Filter by a start datetime
+	 */
+	start_timestamp?: string | null;
+	/**
+	 * Filter by a end datetime
+	 */
+	end_timestamp?: string | null;
+};

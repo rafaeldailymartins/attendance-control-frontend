@@ -3,7 +3,12 @@ import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Download } from "lucide-react";
 import React, { useState } from "react";
-import type { AttendanceResponse, UserResponse } from "@/http/gen/api.schemas";
+import { toast } from "sonner";
+import type {
+	AttendanceResponse,
+	ExportAttendancesToCsvParams,
+	UserResponse,
+} from "@/http/gen/api.schemas";
 import { RecordsService, UsersService } from "@/http/services";
 import { ATTENDANCE_TYPE_MAP } from "@/lib/utils";
 import type { AttendancesSearch } from "@/routes/_private/attendances";
@@ -99,6 +104,33 @@ export function RecordsTable({
 		},
 	});
 
+	const { mutateAsync: exportToCsv } = RecordsService.useExportAttendancesToCsv(
+		{
+			request: {
+				responseType: "blob",
+			},
+			mutation: {
+				onMutate: () => {
+					const toastId = toast.loading("Exportando para csv...");
+					return { toastId };
+				},
+				onSuccess: (data) => {
+					const url = window.URL.createObjectURL(data as Blob);
+
+					const a = document.createElement("a");
+					a.href = url;
+					a.download = "attendances.csv";
+					a.click();
+
+					window.URL.revokeObjectURL(url);
+				},
+				onSettled: (_data, _error, _variables, res) => {
+					toast.dismiss(res?.toastId);
+				},
+			},
+		},
+	);
+
 	const [startDate, setStartDate] = useState<Date | undefined>(() =>
 		filter?.startDate ? parseISO(filter.startDate) : undefined,
 	);
@@ -143,6 +175,15 @@ export function RecordsTable({
 		});
 	}
 
+	async function handleExportToCsv() {
+		const params: ExportAttendancesToCsvParams = {
+			start_timestamp: filter?.startDate,
+			end_timestamp: filter?.endDate,
+			user_id: filter?.userId,
+		};
+		await exportToCsv({ params });
+	}
+
 	return (
 		<div className="container mx-auto">
 			{showFilters && (
@@ -176,7 +217,7 @@ export function RecordsTable({
 						/>
 					</div>
 
-					<Button className="flex-[0.6]">
+					<Button className="flex-[0.6]" onClick={handleExportToCsv}>
 						<Download />
 						EXPORTAR CSV
 					</Button>
