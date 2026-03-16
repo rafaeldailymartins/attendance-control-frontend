@@ -14,9 +14,16 @@ interface Props {
 	date?: Date;
 	onChange: (value?: Date) => void;
 	id?: string;
+	isInvalid?: boolean;
 }
 
-export function DatePicker({ placeHolder, date, onChange, id }: Props) {
+export function DatePicker({
+	placeHolder,
+	date,
+	onChange,
+	id,
+	isInvalid,
+}: Props) {
 	const [open, setOpen] = useState(false);
 
 	function handleSelect(value?: Date) {
@@ -31,6 +38,7 @@ export function DatePicker({ placeHolder, date, onChange, id }: Props) {
 					variant="ghost"
 					data-empty={!date}
 					id={id}
+					aria-invalid={isInvalid}
 					className={cn(
 						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
 						date && ["text-accent-foreground hover:text-accent-foreground"],

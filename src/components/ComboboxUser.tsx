@@ -20,10 +20,14 @@ export function ComboboxUser({
 	user,
 	onChange,
 	id,
+	name,
+	isInvalid,
 }: {
 	user?: UserResponse;
 	onChange: (value?: UserResponse) => void;
 	id?: string;
+	name?: string;
+	isInvalid?: boolean;
 }) {
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
@@ -60,6 +64,8 @@ export function ComboboxUser({
 					role="combobox"
 					aria-expanded={open}
 					id={id}
+					name={name}
+					aria-invalid={isInvalid}
 					className={cn(
 						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
 						user && ["text-accent-foreground hover:text-accent-foreground"],

@@ -4,6 +4,7 @@ import {
 	CircleUserRound,
 	Clock,
 	FileChartColumn,
+	Fingerprint,
 	LogOut,
 	type LucideIcon,
 } from "lucide-react";
@@ -42,12 +43,17 @@ const items: MenuItem[] = [
 	{
 		title: "Ponto",
 		url: "/clock",
-		icon: Clock,
+		icon: Fingerprint,
 	},
 	{
 		title: "Relatório de Faltas",
 		url: "/absences",
 		icon: FileChartColumn,
+	},
+	{
+		title: "Registro de Presenças",
+		url: "/attendances",
+		icon: Clock,
 	},
 ];
 

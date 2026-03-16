@@ -44,6 +44,7 @@ import type {
 	AttendanceResponse,
 	AttendanceUpdate,
 	ExportAbsencesToCsvParams,
+	ExportAttendancesToCsvParams,
 	ListAbsencesParams,
 	ListAttendancesParams,
 	Message,
@@ -1333,6 +1334,91 @@ export const useExportAbsencesToCsv = <
 	TContext
 > => {
 	const mutationOptions = getExportAbsencesToCsvMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Export Attendances To Csv
+ */
+export const exportAttendancesToCsv = (
+	params?: ExportAttendancesToCsvParams,
+	options?: SecondParameter<typeof customInstance>,
+	signal?: AbortSignal,
+) => {
+	return customInstance<unknown>(
+		{ url: `/records/attendances/csv`, method: "POST", params, signal },
+		options,
+	);
+};
+
+export const getExportAttendancesToCsvMutationOptions = <
+	TError = ErrorType<ApiError>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof exportAttendancesToCsv>>,
+		TError,
+		{ params?: ExportAttendancesToCsvParams },
+		TContext
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof exportAttendancesToCsv>>,
+	TError,
+	{ params?: ExportAttendancesToCsvParams },
+	TContext
+> => {
+	const mutationKey = ["exportAttendancesToCsv"];
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof exportAttendancesToCsv>>,
+		{ params?: ExportAttendancesToCsvParams }
+	> = (props) => {
+		const { params } = props ?? {};
+
+		return exportAttendancesToCsv(params, requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type ExportAttendancesToCsvMutationResult = NonNullable<
+	Awaited<ReturnType<typeof exportAttendancesToCsv>>
+>;
+
+export type ExportAttendancesToCsvMutationError = ErrorType<ApiError>;
+
+/**
+ * @summary Export Attendances To Csv
+ */
+export const useExportAttendancesToCsv = <
+	TError = ErrorType<ApiError>,
+	TContext = unknown,
+>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof exportAttendancesToCsv>>,
+			TError,
+			{ params?: ExportAttendancesToCsvParams },
+			TContext
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof exportAttendancesToCsv>>,
+	TError,
+	{ params?: ExportAttendancesToCsvParams },
+	TContext
+> => {
+	const mutationOptions = getExportAttendancesToCsvMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };
