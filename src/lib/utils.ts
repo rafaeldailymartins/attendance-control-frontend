@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { type ClassValue, clsx } from "clsx";
+import { isValid, parse } from "date-fns";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import type { ErrorType } from "@/http/customInstance";
@@ -128,3 +129,14 @@ export const ATTENDANCE_TYPE_MAP: Record<AttendanceType, string> = {
 	0: "Entrada",
 	1: "Saída",
 };
+
+const TIME_FORMATS = ["HH:mm:ss", "HH:mm"];
+
+export function parseTime(value: string, baseDate: Date) {
+	for (const format of TIME_FORMATS) {
+		const parsed = parse(value, format, baseDate);
+		if (isValid(parsed)) return parsed;
+	}
+
+	return undefined;
+}

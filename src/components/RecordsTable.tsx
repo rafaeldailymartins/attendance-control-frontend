@@ -1,7 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download } from "lucide-react";
+import { Download, MoreHorizontal } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import type {
@@ -15,7 +15,15 @@ import type { AttendancesSearch } from "@/routes/_private/attendances";
 import { ComboboxUser } from "./ComboboxUser";
 import { DataTable } from "./DataTable";
 import { DatePicker } from "./DatePicker";
+import { UpdateAttendanceDialog } from "./UpdateAttendanceDialog";
 import { Button } from "./ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Label } from "./ui/label";
 
 const columns = {
@@ -24,7 +32,7 @@ const columns = {
 		header: "Nome",
 	},
 	weekday: {
-		accessorKey: "weekday",
+		id: "weekday",
 		header: "Dia da semana",
 		accessorFn: (row) => format(row.timestamp, "EEEE", { locale: ptBR }),
 	},
@@ -55,6 +63,38 @@ const columns = {
 		accessorKey: "timestamp",
 		header: "Data/Hora",
 		accessorFn: (row) => format(row.timestamp, "dd/MM/yyyy HH:mm:ss"),
+	},
+	actions: {
+		id: "actions",
+		cell: ({ row }) => {
+			return (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="ghost" className="h-8 w-8 p-0">
+							<span className="sr-only">Abrir menu</span>
+							<MoreHorizontal className="h-4 w-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuLabel>Ações</DropdownMenuLabel>
+						<UpdateAttendanceDialog
+							attendance={row.original}
+							title="Editar Presença"
+						>
+							<DropdownMenuItem
+								className="cursor-pointer"
+								onSelect={(e) => e.preventDefault()}
+							>
+								Editar
+							</DropdownMenuItem>
+						</UpdateAttendanceDialog>
+						<DropdownMenuItem className="cursor-pointer">
+							Excluir
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			);
+		},
 	},
 } as const satisfies Record<string, ColumnDef<AttendanceResponse>>;
 
