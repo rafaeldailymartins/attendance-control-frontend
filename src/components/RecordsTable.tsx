@@ -11,6 +11,7 @@ import type {
 } from "@/http/gen/api.schemas";
 import { RecordsService, UsersService } from "@/http/services";
 import { ATTENDANCE_TYPE_MAP } from "@/lib/utils";
+import { queryClient } from "@/queryClient";
 import type { AttendancesSearch } from "@/routes/_private/attendances";
 import { ComboboxUser } from "./ComboboxUser";
 import { DataTable } from "./DataTable";
@@ -67,6 +68,26 @@ const columns = {
 	actions: {
 		id: "actions",
 		cell: ({ row }) => {
+			const { mutateAsync: deleteAttendance, isPending } =
+				RecordsService.useDeleteAttendance({
+					mutation: {
+						onMutate: () => {
+							const toastId = toast.loading("Removendo...");
+							return { toastId };
+						},
+						onSuccess: () => {
+							toast.success("Presença removida com sucesso");
+
+							queryClient.invalidateQueries({
+								queryKey: RecordsService.getListAttendancesInfiniteQueryKey(),
+							});
+						},
+						onSettled: (_data, _error, _variables, res) => {
+							toast.dismiss(res?.toastId);
+						},
+					},
+				});
+
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -88,7 +109,13 @@ const columns = {
 								Editar
 							</DropdownMenuItem>
 						</UpdateAttendanceDialog>
-						<DropdownMenuItem className="cursor-pointer">
+						<DropdownMenuItem
+							className="cursor-pointer"
+							disabled={isPending}
+							onClick={() =>
+								deleteAttendance({ attendanceId: row.original.id })
+							}
+						>
 							Excluir
 						</DropdownMenuItem>
 					</DropdownMenuContent>
