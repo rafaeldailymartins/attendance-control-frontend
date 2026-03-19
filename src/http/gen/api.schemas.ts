@@ -442,6 +442,8 @@ export interface UserResponse {
 	id: number;
 	/** A list of UserShiftResponse schema, containing the user's shifts. */
 	shifts: UserShiftResponse[];
+	/** The user's role */
+	role: RoleResponse;
 	/** False if the user should be hidden when returning absences. */
 	active: boolean;
 }

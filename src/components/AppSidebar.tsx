@@ -7,6 +7,7 @@ import {
 	Fingerprint,
 	LogOut,
 	type LucideIcon,
+	Users,
 } from "lucide-react";
 
 import {
@@ -54,6 +55,11 @@ const items: MenuItem[] = [
 		title: "Registro de Presenças",
 		url: "/attendances",
 		icon: Clock,
+	},
+	{
+		title: "Usuários Cadastrados",
+		url: "/users",
+		icon: Users,
 	},
 ];
 
