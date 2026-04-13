@@ -276,7 +276,7 @@ export function SaveUserDialog({ children, title, description, user }: Props) {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent className="sm:max-w-lg">
+			<DialogContent className="sm:max-w-lg" key={user?.id ?? "new-user"}>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit, onError)}>
 						<DialogHeader>

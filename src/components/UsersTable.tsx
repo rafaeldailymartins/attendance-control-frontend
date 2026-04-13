@@ -1,9 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Plus, SearchIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { UserResponse } from "@/http/gen/api.schemas";
 import { UsersService } from "@/http/services";
+import { queryClient } from "@/queryClient";
 import { DataTable } from "./DataTable";
 import { Loading } from "./Loading";
 import { SaveUserDialog } from "./SaveUserDialog";
@@ -33,6 +35,27 @@ export const columns: ColumnDef<UserResponse>[] = [
 	{
 		id: "actions",
 		cell: ({ row }) => {
+			const { mutateAsync: deleteUser, isPending } = UsersService.useDeleteUser(
+				{
+					mutation: {
+						onMutate: () => {
+							const toastId = toast.loading("Removendo...");
+							return { toastId };
+						},
+						onSuccess: () => {
+							toast.success("Usuário removido com sucesso");
+
+							queryClient.invalidateQueries({
+								queryKey: UsersService.getListUsersInfiniteQueryKey(),
+							});
+						},
+						onSettled: (_data, _error, _variables, res) => {
+							toast.dismiss(res?.toastId);
+						},
+					},
+				},
+			);
+
 			return (
 				<div className="flex justify-end pr-8">
 					<DropdownMenu>
@@ -52,7 +75,11 @@ export const columns: ColumnDef<UserResponse>[] = [
 									Editar
 								</DropdownMenuItem>
 							</SaveUserDialog>
-							<DropdownMenuItem className="cursor-pointer">
+							<DropdownMenuItem
+								className="cursor-pointer"
+								disabled={isPending}
+								onClick={() => deleteUser({ userId: row.original.id })}
+							>
 								Excluir
 							</DropdownMenuItem>
 						</DropdownMenuContent>
