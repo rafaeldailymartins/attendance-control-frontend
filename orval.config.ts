@@ -38,11 +38,6 @@ export default defineConfig({
                 useSuspenseInfiniteQuery: true
               }
             },
-            list_roles: {
-              query: {
-                useInfinite: true,
-              }
-            },
             list_days_off: {
               query: {
                 useInfinite: true,

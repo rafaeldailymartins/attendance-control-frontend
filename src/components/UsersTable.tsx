@@ -6,6 +6,7 @@ import type { UserResponse } from "@/http/gen/api.schemas";
 import { UsersService } from "@/http/services";
 import { DataTable } from "./DataTable";
 import { Loading } from "./Loading";
+import { SaveUserDialog } from "./SaveUserDialog";
 import { Button } from "./ui/button";
 import {
 	DropdownMenu,
@@ -31,7 +32,7 @@ export const columns: ColumnDef<UserResponse>[] = [
 	},
 	{
 		id: "actions",
-		cell: () => {
+		cell: ({ row }) => {
 			return (
 				<div className="flex justify-end pr-8">
 					<DropdownMenu>
@@ -43,9 +44,14 @@ export const columns: ColumnDef<UserResponse>[] = [
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuLabel>Ações</DropdownMenuLabel>
-							<DropdownMenuItem className="cursor-pointer">
-								Editar
-							</DropdownMenuItem>
+							<SaveUserDialog user={row.original} title="Editar Usuário">
+								<DropdownMenuItem
+									className="cursor-pointer"
+									onSelect={(e) => e.preventDefault()}
+								>
+									Editar
+								</DropdownMenuItem>
+							</SaveUserDialog>
 							<DropdownMenuItem className="cursor-pointer">
 								Excluir
 							</DropdownMenuItem>
@@ -92,11 +98,12 @@ export function UsersTable() {
 						<SearchIcon />
 					</InputGroupAddon>
 				</InputGroup>
-
-				<Button className="max-w-sm">
-					<Plus />
-					CRIAR USUÁRIO
-				</Button>
+				<SaveUserDialog title="Criar Usuário">
+					<Button className="max-w-sm">
+						<Plus />
+						CRIAR USUÁRIO
+					</Button>
+				</SaveUserDialog>
 			</div>
 			<div className="container mx-auto py-6">
 				{isLoading ? (

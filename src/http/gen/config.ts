@@ -41,10 +41,8 @@ import type {
 	DayOffCreate,
 	DayOffResponse,
 	ListDaysOffParams,
-	ListRolesParams,
 	Message,
 	PageDayOffResponse,
-	PageRoleResponse,
 	RoleCreate,
 	RoleResponse,
 	RoleUpdate,
@@ -52,6 +50,264 @@ import type {
 } from "./api.schemas";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+/**
+ * Get all roles
+ * @summary List Roles
+ */
+export const listRoles = (
+	options?: SecondParameter<typeof customInstance>,
+	signal?: AbortSignal,
+) => {
+	return customInstance<RoleResponse[]>(
+		{ url: `/config/roles`, method: "GET", signal },
+		options,
+	);
+};
+
+export const getListRolesQueryKey = () => {
+	return [`/config/roles`] as const;
+};
+
+export const getListRolesQueryOptions = <
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListRolesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listRoles>>> = ({
+		signal,
+	}) => listRoles(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof listRoles>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListRolesQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listRoles>>
+>;
+export type ListRolesQueryError = ErrorType<ApiError>;
+
+export function useListRoles<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listRoles>>,
+					TError,
+					Awaited<ReturnType<typeof listRoles>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRoles<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof listRoles>>,
+					TError,
+					Awaited<ReturnType<typeof listRoles>>
+				>,
+				"initialData"
+			>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRoles<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Roles
+ */
+
+export function useListRoles<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListRolesQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListRolesSuspenseQueryOptions = <
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(options?: {
+	query?: Partial<
+		UseSuspenseQueryOptions<
+			Awaited<ReturnType<typeof listRoles>>,
+			TError,
+			TData
+		>
+	>;
+	request?: SecondParameter<typeof customInstance>;
+}) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getListRolesQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof listRoles>>> = ({
+		signal,
+	}) => listRoles(requestOptions, signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+		Awaited<ReturnType<typeof listRoles>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListRolesSuspenseQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listRoles>>
+>;
+export type ListRolesSuspenseQueryError = ErrorType<ApiError>;
+
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options: {
+		query: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Roles
+ */
+
+export function useListRolesSuspense<
+	TData = Awaited<ReturnType<typeof listRoles>>,
+	TError = ErrorType<ApiError>,
+>(
+	options?: {
+		query?: Partial<
+			UseSuspenseQueryOptions<
+				Awaited<ReturnType<typeof listRoles>>,
+				TError,
+				TData
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListRolesSuspenseQueryOptions(options);
+
+	const query = useSuspenseQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
 
 /**
  * Create new role
@@ -145,466 +401,6 @@ export const useCreateNewRole = <
 
 	return useMutation(mutationOptions, queryClient);
 };
-/**
- * Get all roles
- * @summary List Roles
- */
-export const listRoles = (
-	params?: ListRolesParams,
-	options?: SecondParameter<typeof customInstance>,
-	signal?: AbortSignal,
-) => {
-	return customInstance<PageRoleResponse>(
-		{ url: `/config/roles`, method: "GET", params, signal },
-		options,
-	);
-};
-
-export const getListRolesInfiniteQueryKey = (params?: ListRolesParams) => {
-	return ["infinate", `/config/roles`, ...(params ? [params] : [])] as const;
-};
-
-export const getListRolesQueryKey = (params?: ListRolesParams) => {
-	return [`/config/roles`, ...(params ? [params] : [])] as const;
-};
-
-export const getListRolesInfiniteQueryOptions = <
-	TData = InfiniteData<
-		Awaited<ReturnType<typeof listRoles>>,
-		ListRolesParams["page"]
-	>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseInfiniteQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData,
-				QueryKey,
-				ListRolesParams["page"]
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
-
-	const queryKey =
-		queryOptions?.queryKey ?? getListRolesInfiniteQueryKey(params);
-
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof listRoles>>,
-		QueryKey,
-		ListRolesParams["page"]
-	> = ({ signal, pageParam }) =>
-		listRoles(
-			{ ...params, page: pageParam || params?.["page"] },
-			requestOptions,
-			signal,
-		);
-
-	return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-		Awaited<ReturnType<typeof listRoles>>,
-		TError,
-		TData,
-		QueryKey,
-		ListRolesParams["page"]
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type ListRolesInfiniteQueryResult = NonNullable<
-	Awaited<ReturnType<typeof listRoles>>
->;
-export type ListRolesInfiniteQueryError = ErrorType<ApiError>;
-
-export function useListRolesInfinite<
-	TData = InfiniteData<
-		Awaited<ReturnType<typeof listRoles>>,
-		ListRolesParams["page"]
-	>,
-	TError = ErrorType<ApiError>,
->(
-	params: undefined | ListRolesParams,
-	options: {
-		query: Partial<
-			UseInfiniteQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData,
-				QueryKey,
-				ListRolesParams["page"]
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listRoles>>,
-					TError,
-					Awaited<ReturnType<typeof listRoles>>,
-					QueryKey
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRolesInfinite<
-	TData = InfiniteData<
-		Awaited<ReturnType<typeof listRoles>>,
-		ListRolesParams["page"]
-	>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseInfiniteQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData,
-				QueryKey,
-				ListRolesParams["page"]
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listRoles>>,
-					TError,
-					Awaited<ReturnType<typeof listRoles>>,
-					QueryKey
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRolesInfinite<
-	TData = InfiniteData<
-		Awaited<ReturnType<typeof listRoles>>,
-		ListRolesParams["page"]
-	>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseInfiniteQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData,
-				QueryKey,
-				ListRolesParams["page"]
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List Roles
- */
-
-export function useListRolesInfinite<
-	TData = InfiniteData<
-		Awaited<ReturnType<typeof listRoles>>,
-		ListRolesParams["page"]
-	>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseInfiniteQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData,
-				QueryKey,
-				ListRolesParams["page"]
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getListRolesInfiniteQueryOptions(params, options);
-
-	const query = useInfiniteQuery(
-		queryOptions,
-		queryClient,
-	) as UseInfiniteQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-}
-
-export const getListRolesQueryOptions = <
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
-
-	const queryKey = queryOptions?.queryKey ?? getListRolesQueryKey(params);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof listRoles>>> = ({
-		signal,
-	}) => listRoles(params, requestOptions, signal);
-
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof listRoles>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type ListRolesQueryResult = NonNullable<
-	Awaited<ReturnType<typeof listRoles>>
->;
-export type ListRolesQueryError = ErrorType<ApiError>;
-
-export function useListRoles<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params: undefined | ListRolesParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listRoles>>,
-					TError,
-					Awaited<ReturnType<typeof listRoles>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRoles<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof listRoles>>,
-					TError,
-					Awaited<ReturnType<typeof listRoles>>
-				>,
-				"initialData"
-			>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRoles<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List Roles
- */
-
-export function useListRoles<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof listRoles>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getListRolesQueryOptions(params, options);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-		TData,
-		TError
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-}
-
-export const getListRolesSuspenseQueryOptions = <
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseSuspenseQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
-
-	const queryKey = queryOptions?.queryKey ?? getListRolesQueryKey(params);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof listRoles>>> = ({
-		signal,
-	}) => listRoles(params, requestOptions, signal);
-
-	return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
-		Awaited<ReturnType<typeof listRoles>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type ListRolesSuspenseQueryResult = NonNullable<
-	Awaited<ReturnType<typeof listRoles>>
->;
-export type ListRolesSuspenseQueryError = ErrorType<ApiError>;
-
-export function useListRolesSuspense<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params: undefined | ListRolesParams,
-	options: {
-		query: Partial<
-			UseSuspenseQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseSuspenseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRolesSuspense<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseSuspenseQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseSuspenseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useListRolesSuspense<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseSuspenseQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseSuspenseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary List Roles
- */
-
-export function useListRolesSuspense<
-	TData = Awaited<ReturnType<typeof listRoles>>,
-	TError = ErrorType<ApiError>,
->(
-	params?: ListRolesParams,
-	options?: {
-		query?: Partial<
-			UseSuspenseQueryOptions<
-				Awaited<ReturnType<typeof listRoles>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customInstance>;
-	},
-	queryClient?: QueryClient,
-): UseSuspenseQueryResult<TData, TError> & {
-	queryKey: DataTag<QueryKey, TData, TError>;
-} {
-	const queryOptions = getListRolesSuspenseQueryOptions(params, options);
-
-	const query = useSuspenseQuery(
-		queryOptions,
-		queryClient,
-	) as UseSuspenseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
-}
-
 /**
  * Update a role
  * @summary Update Role
