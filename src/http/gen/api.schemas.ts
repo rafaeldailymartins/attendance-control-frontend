@@ -230,19 +230,6 @@ export interface PageDayOffResponse {
 	currentPageSize: number;
 }
 
-export interface PageRoleResponse {
-	/** List of items on this Page */
-	items: RoleResponse[];
-	/** Number of total items */
-	totalItems: number;
-	/** Total number of pages */
-	totalPages: number;
-	/** Page number */
-	currentPage: number;
-	/** Number of items per page */
-	currentPageSize: number;
-}
-
 export interface PageShiftResponse {
 	/** List of items on this Page */
 	items: ShiftResponse[];
@@ -425,6 +412,11 @@ export interface UserCurrentShiftResponse {
  */
 export type UserResponseRoleId = number | null;
 
+/**
+ * The user's role
+ */
+export type UserResponseRole = RoleResponse | null;
+
 export interface UserResponse {
 	/**
 	 * The user's email, also used as the username when logging in.
@@ -442,6 +434,8 @@ export interface UserResponse {
 	id: number;
 	/** A list of UserShiftResponse schema, containing the user's shifts. */
 	shifts: UserShiftResponse[];
+	/** The user's role */
+	role?: UserResponseRole;
 	/** False if the user should be hidden when returning absences. */
 	active: boolean;
 }
@@ -537,18 +531,6 @@ export type ListUsersParams = {
 	 * Find users by name. Enter part of the name to get matching results.
 	 */
 	search?: string | null;
-	/**
-	 * @minimum 1
-	 * @maximum 100
-	 */
-	pageSize?: number;
-	/**
-	 * @minimum 1
-	 */
-	page?: number;
-};
-
-export type ListRolesParams = {
 	/**
 	 * @minimum 1
 	 * @maximum 100

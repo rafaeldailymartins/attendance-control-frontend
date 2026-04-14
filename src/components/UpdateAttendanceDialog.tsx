@@ -61,17 +61,17 @@ export function UpdateAttendanceDialog({ children, title, attendance }: Props) {
 					<DialogDescription className="sr-only">
 						Formulário para atualização de frequência.
 					</DialogDescription>
-					<Tabs defaultValue="info" className="w-[400px]">
-						<TabsList variant="line">
-							<TabsTrigger value="info">Informações</TabsTrigger>
-						</TabsList>
-						<TabsContent value="info">
-							<Suspense fallback={<Loading />}>
-								<AttendanceForm attendance={attendance} />
-							</Suspense>
-						</TabsContent>
-					</Tabs>
 				</DialogHeader>
+				<Tabs defaultValue="info" className="w-[400px]">
+					<TabsList variant="line">
+						<TabsTrigger value="info">Informações</TabsTrigger>
+					</TabsList>
+					<Suspense fallback={<Loading />}>
+						<TabsContent value="info">
+							<AttendanceForm attendance={attendance} />
+						</TabsContent>
+					</Suspense>
+				</Tabs>
 			</DialogContent>
 		</Dialog>
 	);

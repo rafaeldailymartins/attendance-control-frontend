@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
 import { queryClient } from "./queryClient.ts";
 import reportWebVitals from "./reportWebVitals.ts";
 
@@ -34,7 +35,9 @@ if (rootElement && !rootElement.innerHTML) {
 	root.render(
 		<StrictMode>
 			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
+				<TooltipProvider>
+					<RouterProvider router={router} />
+				</TooltipProvider>
 			</QueryClientProvider>
 		</StrictMode>,
 	);

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivateRouteImport } from './routes/_private'
 import { Route as PrivateIndexRouteImport } from './routes/_private/index'
+import { Route as PrivateUsersRouteImport } from './routes/_private/users'
 import { Route as PrivateClockRouteImport } from './routes/_private/clock'
 import { Route as PrivateAttendancesRouteImport } from './routes/_private/attendances'
 import { Route as PrivateAbsencesRouteImport } from './routes/_private/absences'
@@ -28,6 +29,11 @@ const PrivateRoute = PrivateRouteImport.update({
 const PrivateIndexRoute = PrivateIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => PrivateRoute,
+} as any)
+const PrivateUsersRoute = PrivateUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => PrivateRoute,
 } as any)
 const PrivateClockRoute = PrivateClockRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/absences': typeof PrivateAbsencesRoute
   '/attendances': typeof PrivateAttendancesRoute
   '/clock': typeof PrivateClockRoute
+  '/users': typeof PrivateUsersRoute
   '/': typeof PrivateIndexRoute
 }
 export interface FileRoutesByTo {
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
   '/absences': typeof PrivateAbsencesRoute
   '/attendances': typeof PrivateAttendancesRoute
   '/clock': typeof PrivateClockRoute
+  '/users': typeof PrivateUsersRoute
   '/': typeof PrivateIndexRoute
 }
 export interface FileRoutesById {
@@ -67,13 +75,14 @@ export interface FileRoutesById {
   '/_private/absences': typeof PrivateAbsencesRoute
   '/_private/attendances': typeof PrivateAttendancesRoute
   '/_private/clock': typeof PrivateClockRoute
+  '/_private/users': typeof PrivateUsersRoute
   '/_private/': typeof PrivateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/absences' | '/attendances' | '/clock' | '/'
+  fullPaths: '/login' | '/absences' | '/attendances' | '/clock' | '/users' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/absences' | '/attendances' | '/clock' | '/'
+  to: '/login' | '/absences' | '/attendances' | '/clock' | '/users' | '/'
   id:
     | '__root__'
     | '/_private'
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/_private/absences'
     | '/_private/attendances'
     | '/_private/clock'
+    | '/_private/users'
     | '/_private/'
   fileRoutesById: FileRoutesById
 }
@@ -112,6 +122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivateIndexRouteImport
       parentRoute: typeof PrivateRoute
     }
+    '/_private/users': {
+      id: '/_private/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof PrivateUsersRouteImport
+      parentRoute: typeof PrivateRoute
+    }
     '/_private/clock': {
       id: '/_private/clock'
       path: '/clock'
@@ -140,6 +157,7 @@ interface PrivateRouteChildren {
   PrivateAbsencesRoute: typeof PrivateAbsencesRoute
   PrivateAttendancesRoute: typeof PrivateAttendancesRoute
   PrivateClockRoute: typeof PrivateClockRoute
+  PrivateUsersRoute: typeof PrivateUsersRoute
   PrivateIndexRoute: typeof PrivateIndexRoute
 }
 
@@ -147,6 +165,7 @@ const PrivateRouteChildren: PrivateRouteChildren = {
   PrivateAbsencesRoute: PrivateAbsencesRoute,
   PrivateAttendancesRoute: PrivateAttendancesRoute,
   PrivateClockRoute: PrivateClockRoute,
+  PrivateUsersRoute: PrivateUsersRoute,
   PrivateIndexRoute: PrivateIndexRoute,
 }
 
