@@ -25,6 +25,7 @@ export function Combobox<T extends string | number>({
 	value,
 	onChange,
 	items,
+	className,
 }: {
 	id?: string;
 	name?: string;
@@ -33,6 +34,7 @@ export function Combobox<T extends string | number>({
 	value?: T;
 	onChange?: (value?: T) => void;
 	items?: ComboboxItem<T>[];
+	className?: string;
 }) {
 	const [open, setOpen] = useState(false);
 
@@ -47,7 +49,8 @@ export function Combobox<T extends string | number>({
 					name={name}
 					aria-invalid={isInvalid}
 					className={cn(
-						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
+						"w-full hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
+						className,
 						value && ["text-accent-foreground hover:text-accent-foreground"],
 					)}
 				>

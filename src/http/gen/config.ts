@@ -22,6 +22,8 @@ import type {
 	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult,
+	UseSuspenseInfiniteQueryOptions,
+	UseSuspenseInfiniteQueryResult,
 	UseSuspenseQueryOptions,
 	UseSuspenseQueryResult,
 } from "@tanstack/react-query";
@@ -29,6 +31,7 @@ import {
 	useInfiniteQuery,
 	useMutation,
 	useQuery,
+	useSuspenseInfiniteQuery,
 	useSuspenseQuery,
 } from "@tanstack/react-query";
 import type { BodyType, ErrorType } from "../customInstance";
@@ -1115,6 +1118,178 @@ export function useListDaysOffSuspense<
 		queryOptions,
 		queryClient,
 	) as UseSuspenseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+export const getListDaysOffSuspenseInfiniteQueryOptions = <
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey =
+		queryOptions?.queryKey ?? getListDaysOffInfiniteQueryKey(params);
+
+	const queryFn: QueryFunction<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		QueryKey,
+		ListDaysOffParams["page"]
+	> = ({ signal, pageParam }) =>
+		listDaysOff(
+			{ ...params, page: pageParam || params?.["page"] },
+			requestOptions,
+			signal,
+		);
+
+	return {
+		queryKey,
+		queryFn,
+		...queryOptions,
+	} as UseSuspenseInfiniteQueryOptions<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		TError,
+		TData,
+		QueryKey,
+		ListDaysOffParams["page"]
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListDaysOffSuspenseInfiniteQueryResult = NonNullable<
+	Awaited<ReturnType<typeof listDaysOff>>
+>;
+export type ListDaysOffSuspenseInfiniteQueryError = ErrorType<ApiError>;
+
+export function useListDaysOffSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params: undefined | ListDaysOffParams,
+	options: {
+		query: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useListDaysOffSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary List Days Off
+ */
+
+export function useListDaysOffSuspenseInfinite<
+	TData = InfiniteData<
+		Awaited<ReturnType<typeof listDaysOff>>,
+		ListDaysOffParams["page"]
+	>,
+	TError = ErrorType<ApiError>,
+>(
+	params?: ListDaysOffParams,
+	options?: {
+		query?: Partial<
+			UseSuspenseInfiniteQueryOptions<
+				Awaited<ReturnType<typeof listDaysOff>>,
+				TError,
+				TData,
+				QueryKey,
+				ListDaysOffParams["page"]
+			>
+		>;
+		request?: SecondParameter<typeof customInstance>;
+	},
+	queryClient?: QueryClient,
+): UseSuspenseInfiniteQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>;
+} {
+	const queryOptions = getListDaysOffSuspenseInfiniteQueryOptions(
+		params,
+		options,
+	);
+
+	const query = useSuspenseInfiniteQuery(
+		queryOptions,
+		queryClient,
+	) as UseSuspenseInfiniteQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
 	};
 

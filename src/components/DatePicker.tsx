@@ -1,4 +1,5 @@
-import { ChevronDownIcon } from "lucide-react";
+import { ptBR } from "date-fns/locale";
+import { CalendarDays } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -49,7 +50,7 @@ export function DatePicker({
 					) : (
 						<span>{placeHolder ?? "Selecione uma data"}</span>
 					)}
-					<ChevronDownIcon />
+					<CalendarDays />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-auto p-0" align="start">
@@ -58,6 +59,7 @@ export function DatePicker({
 					selected={date}
 					onSelect={handleSelect}
 					defaultMonth={date}
+					locale={ptBR}
 				/>
 			</PopoverContent>
 		</Popover>
