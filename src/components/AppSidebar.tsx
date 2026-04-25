@@ -1,5 +1,6 @@
 import { Link, type LinkProps } from "@tanstack/react-router";
 import {
+	Bolt,
 	ChevronsUpDown,
 	CircleUserRound,
 	Clock,
@@ -60,6 +61,11 @@ const items: MenuItem[] = [
 		title: "Usuários Cadastrados",
 		url: "/users",
 		icon: Users,
+	},
+	{
+		title: "Configurações",
+		url: "/config",
+		icon: Bolt,
 	},
 ];
 

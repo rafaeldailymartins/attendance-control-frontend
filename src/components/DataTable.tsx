@@ -31,6 +31,7 @@ interface PageResponse<TData> {
 
 interface BaseTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
+	pageSize?: number;
 }
 
 interface InfiniteQueryTableProps<TData, TValue>
@@ -60,12 +61,13 @@ export function DataTable<TData, TValue>({
 	data,
 	infiniteQuery,
 	nextPageFn,
+	pageSize,
 }: DataTableProps<TData, TValue>) {
 	const lastPage = infiniteQuery ? data.at(-1) : undefined;
 
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
-		pageSize: 10,
+		pageSize: pageSize ?? 10,
 	});
 	const table = useReactTable({
 		data: infiniteQuery ? data.flatMap((page) => page.items) : data,

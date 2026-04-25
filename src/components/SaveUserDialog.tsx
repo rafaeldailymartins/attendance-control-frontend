@@ -368,6 +368,7 @@ function BasicInfoForm({ form }: { form: FormReturn }) {
 						<FormLabel>Cargo</FormLabel>
 						<FormControl>
 							<Combobox
+								className="max-w-sm"
 								value={field.value}
 								onChange={field.onChange}
 								isInvalid={fieldState.invalid}

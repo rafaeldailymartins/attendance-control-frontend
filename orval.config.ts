@@ -41,6 +41,7 @@ export default defineConfig({
             list_days_off: {
               query: {
                 useInfinite: true,
+                useSuspenseInfiniteQuery: true
               }
             },
           }
