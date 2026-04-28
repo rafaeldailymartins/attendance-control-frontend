@@ -59,7 +59,7 @@ function ClockPage() {
 				<CardFooter className="flex-col gap-2 w-full">
 					<ComboboxUser user={user} onChange={setUser} />
 					<Select value={type} onValueChange={setType}>
-						<SelectTrigger className="w-full max-w-sm">
+						<SelectTrigger className="w-full max-w-sm cursor-pointer">
 							<SelectValue placeholder="Selecionar tipo..." />
 						</SelectTrigger>
 						<SelectContent>
@@ -171,7 +171,7 @@ function ClockDialogContent({
 			</DialogHeader>
 			<div className="flex flex-col gap-2">
 				<Select value={shift} onValueChange={setShift}>
-					<SelectTrigger className="w-full max-w-sm">
+					<SelectTrigger className="w-full max-w-sm cursor-pointer">
 						<SelectValue placeholder="Selecionar turno..." />
 					</SelectTrigger>
 					<SelectContent>
@@ -183,7 +183,7 @@ function ClockDialogContent({
 					</SelectContent>
 				</Select>
 				<Select value={confirmType} onValueChange={setConfirmType}>
-					<SelectTrigger className="w-full max-w-sm">
+					<SelectTrigger className="w-full max-w-sm cursor-pointer">
 						<SelectValue placeholder="Selecionar tipo..." />
 					</SelectTrigger>
 					<SelectContent>

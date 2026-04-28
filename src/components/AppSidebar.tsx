@@ -187,7 +187,7 @@ function Footer() {
 				<SidebarMenuItem>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<SidebarMenuButton size="lg">
+							<SidebarMenuButton size="lg" className="cursor-pointer">
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-medium">{user.name}</span>
 									<span className="truncate text-xs">{user.email}</span>
@@ -211,7 +211,7 @@ function Footer() {
 								</div>
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={logout}>
+							<DropdownMenuItem className="cursor-pointer" onClick={logout}>
 								<LogOut />
 								<span>Sair</span>
 							</DropdownMenuItem>
