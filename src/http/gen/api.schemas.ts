@@ -259,11 +259,15 @@ export interface PageUserResponse {
 export interface RoleCreate {
 	/** The role name */
 	name: string;
+	/** True if the role is admin */
+	isAdmin?: boolean;
 }
 
 export interface RoleResponse {
 	/** The role name */
 	name: string;
+	/** True if the role is admin */
+	isAdmin?: boolean;
 	/** The role id */
 	id: number;
 }

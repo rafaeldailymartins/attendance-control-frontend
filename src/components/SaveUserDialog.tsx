@@ -150,6 +150,7 @@ interface Props {
 
 export function SaveUserDialog({ children, title, description, user }: Props) {
 	const [activeTab, setActiveTab] = useState("info");
+	const [open, setOpen] = useState(false);
 
 	const { mutateAsync: createUser, isPending: isPendingCreate } =
 		UsersService.useCreateNewUser({
@@ -219,11 +220,14 @@ export function SaveUserDialog({ children, title, description, user }: Props) {
 	}
 
 	async function onSubmit(formData: SaveUserFormType) {
+		setOpen(false);
 		if (formData.edit) {
 			await update(formData);
 			return;
 		}
 		await create(formData);
+		form.reset();
+		setActiveTab("info");
 	}
 
 	async function update(formData: SaveUserFormType) {
@@ -273,8 +277,17 @@ export function SaveUserDialog({ children, title, description, user }: Props) {
 		await createUser({ data });
 	}
 
+	function handleOpenChange(value: boolean) {
+		if (!value) {
+			form.reset();
+			setActiveTab("info");
+		}
+
+		setOpen(value);
+	}
+
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="sm:max-w-lg" key={user?.id ?? "new-user"}>
 				<Form {...form}>
@@ -288,7 +301,9 @@ export function SaveUserDialog({ children, title, description, user }: Props) {
 						<Tabs value={activeTab} onValueChange={setActiveTab}>
 							<TabsList variant="line">
 								<TabsTrigger value="info">Informações</TabsTrigger>
-								<TabsTrigger value="password">Redefinir Senha</TabsTrigger>
+								<TabsTrigger value="password">
+									{user ? "Redefinir Senha" : "Senha"}
+								</TabsTrigger>
 								<TabsTrigger value="shifts">Turnos</TabsTrigger>
 							</TabsList>
 							<Suspense fallback={<Loading />}>

@@ -41,7 +41,7 @@ export function DatePicker({
 					id={id}
 					aria-invalid={isInvalid}
 					className={cn(
-						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
+						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent text-muted-foreground font-normal",
 						date && ["text-accent-foreground hover:text-accent-foreground"],
 					)}
 				>

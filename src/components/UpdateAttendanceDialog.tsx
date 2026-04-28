@@ -200,7 +200,7 @@ function AttendanceForm({ attendance }: { attendance: AttendanceResponse }) {
 								>
 									<SelectTrigger
 										aria-invalid={fieldState.invalid}
-										className="max-w-sm w-full"
+										className="max-w-sm w-full cursor-pointer"
 									>
 										<SelectValue
 											placeholder={
@@ -250,7 +250,7 @@ function AttendanceForm({ attendance }: { attendance: AttendanceResponse }) {
 								>
 									<SelectTrigger
 										aria-invalid={fieldState.invalid}
-										className="max-w-sm w-full"
+										className="max-w-sm w-full cursor-pointer"
 									>
 										<SelectValue placeholder="Selecione o tipo de ponto..." />
 									</SelectTrigger>

@@ -10,7 +10,7 @@ import type {
 	UserResponse,
 } from "@/http/gen/api.schemas";
 import { RecordsService, UsersService } from "@/http/services";
-import { ATTENDANCE_TYPE_MAP } from "@/lib/utils";
+import { ATTENDANCE_TYPE_MAP, omit } from "@/lib/utils";
 import { queryClient } from "@/queryClient";
 import type { AttendancesSearch } from "@/routes/_private/attendances";
 import { ComboboxUser } from "./ComboboxUser";
@@ -165,9 +165,14 @@ export function RecordsTable({
 				},
 			},
 		);
+
+	const { data: currentUser } = UsersService.useGetCurrentUserSuspense();
+
+	const isAdmin = currentUser?.role?.isAdmin ?? false;
+
 	const { data: user } = UsersService.useGetUser(filter?.userId ?? -1, {
 		query: {
-			enabled: !!filter?.userId,
+			enabled: !!filter?.userId && isAdmin,
 		},
 	});
 
@@ -293,7 +298,9 @@ export function RecordsTable({
 
 			<div className="container mx-auto py-6">
 				<DataTable
-					columns={Object.values(filteredColumns)}
+					columns={Object.values(
+						isAdmin ? filteredColumns : omit(filteredColumns, "actions"),
+					)}
 					infiniteQuery
 					nextPageFn={fetchNextPage}
 					data={data?.pages ?? []}
