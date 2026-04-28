@@ -77,9 +77,14 @@ export function AbsencesTable({ filter, onChangeFilter }: Props) {
 		end_date: filter.endDate,
 		user_id: filter.userId,
 	});
+
+	const { data: currentUser } = UsersService.useGetCurrentUserSuspense();
+
+	const isAdmin = currentUser?.role?.isAdmin ?? false;
+
 	const { data: user } = UsersService.useGetUser(filter.userId ?? -1, {
 		query: {
-			enabled: !!filter.userId,
+			enabled: !!filter.userId && isAdmin,
 		},
 	});
 

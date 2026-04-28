@@ -3,6 +3,7 @@ import { format, subDays } from "date-fns";
 import z from "zod";
 import { AbsencesTable } from "@/components/AbsencesTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UsersService } from "@/http/services";
 
 const absencesSearchSchema = z.object({
 	startDate: z.iso.date().catch(format(subDays(new Date(), 30), "yyyy-MM-dd")),
@@ -20,10 +21,22 @@ export const Route = createFileRoute("/_private/absences")({
 function AbsencesPage() {
 	const searchParams = Route.useSearch();
 	const navigate = Route.useNavigate();
+	const { data: currentUser } = UsersService.useGetCurrentUserSuspense();
+
+	const isAdmin = currentUser?.role?.isAdmin ?? false;
+
+	const effectiveFilter: AbsencesSearch = {
+		...searchParams,
+		userId: isAdmin ? searchParams.userId : currentUser?.id,
+	};
 
 	function onChangeFilter(filter: AbsencesSearch) {
 		navigate({
-			search: () => filter,
+			search: (prev) => ({
+				...prev,
+				...filter,
+				userId: isAdmin ? filter.userId : currentUser?.id,
+			}),
 		});
 	}
 
@@ -37,7 +50,7 @@ function AbsencesPage() {
 				</CardHeader>
 				<CardContent>
 					<AbsencesTable
-						filter={searchParams}
+						filter={effectiveFilter}
 						onChangeFilter={onChangeFilter}
 					/>
 				</CardContent>
