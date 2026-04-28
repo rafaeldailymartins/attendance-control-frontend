@@ -140,3 +140,11 @@ export function parseTime(value: string, baseDate: Date) {
 
 	return undefined;
 }
+
+export function omit<T extends Record<string, unknown>, K extends keyof T>(
+	obj: T,
+	prop: K,
+) {
+	const { [prop]: _, ...rest } = obj;
+	return rest;
+}

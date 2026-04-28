@@ -38,6 +38,7 @@ export function ComboboxUser({
 	const { data: currentUser } = UsersService.useGetCurrentUserSuspense();
 
 	const isAdmin = currentUser?.role?.isAdmin ?? false;
+	const selectedUser = isAdmin ? user : currentUser;
 
 	const { data, fetchNextPage, isFetchingNextPage, isLoading } =
 		UsersService.useListUsersInfinite(
@@ -78,10 +79,12 @@ export function ComboboxUser({
 					aria-invalid={isInvalid}
 					className={cn(
 						"w-full max-w-sm hover:text-muted-foreground justify-between border border-input hover:bg-transparent cursor-default text-muted-foreground font-normal",
-						user && ["text-accent-foreground hover:text-accent-foreground"],
+						selectedUser && [
+							"text-accent-foreground hover:text-accent-foreground",
+						],
 					)}
 				>
-					{user ? user.name : "Selecionar usuário..."}
+					{selectedUser ? selectedUser.name : "Selecionar usuário..."}
 					<ChevronDown className="opacity-50 text-muted-foreground" />
 				</Button>
 			</PopoverTrigger>
