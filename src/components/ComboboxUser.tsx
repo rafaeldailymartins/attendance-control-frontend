@@ -1,5 +1,5 @@
 import { Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { UserResponse } from "@/http/gen/api.schemas";
@@ -35,11 +35,16 @@ export function ComboboxUser({
 		search,
 		300,
 	);
+	const { data: currentUser } = UsersService.useGetCurrentUserSuspense();
+
+	const isAdmin = currentUser?.role?.isAdmin ?? false;
+
 	const { data, fetchNextPage, isFetchingNextPage, isLoading } =
 		UsersService.useListUsersInfinite(
 			{ pageSize: 20, search: debouncedSearch },
 			{
 				query: {
+					enabled: isAdmin,
 					getNextPageParam: (page) =>
 						page.currentPage + 1 <= page.totalPages
 							? page.currentPage + 1
@@ -56,6 +61,10 @@ export function ComboboxUser({
 	});
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 
+	useEffect(() => {
+		if (!isAdmin) onChange(currentUser);
+	}, [onChange, isAdmin, currentUser]);
+
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
@@ -63,6 +72,7 @@ export function ComboboxUser({
 					variant="ghost"
 					role="combobox"
 					aria-expanded={open}
+					disabled={!isAdmin}
 					id={id}
 					name={name}
 					aria-invalid={isInvalid}
