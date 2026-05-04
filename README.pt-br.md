@@ -15,6 +15,11 @@ Este repositório refere-se ao frontend do sistema **Attendance Control**.
 
 🔗 Projeto principal (frontend + backend): [github.com/rafaeldailymartins/attendance-control](https://github.com/rafaeldailymartins/attendance-control)
 
+## 📸 Screenshots
+![Tela de Ponto](https://github.com/rafaeldailymartins/attendance-control/raw/main/images/Clock.png)
+![Tela de Relátorio de Faltas](https://github.com/rafaeldailymartins/attendance-control/raw/main/images/Abscences.png)
+![Tela de Registro de Ponto](https://github.com/rafaeldailymartins/attendance-control/raw/main/images/ClockDialog.png)
+![Tela de Edição de Usuário](https://github.com/rafaeldailymartins/attendance-control/raw/main/images/UserEdit.png)
 
 ## 📋 Dependências
 
